@@ -76,12 +76,21 @@
         }
         var createBodyButtons = function (advancedTexture, armMaterial) {
             var topOffset = 450;
+            if (isMobile)
+                topOffset = 550;
+            var width = 50;
+            if (isMobile)
+                width = 90;
+            var height = 100;
+            if (isMobile)
+                height = 170;
             // Right arm
             var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
                 "https://i.imgur.com/W1I0Duq.png");
+            tempButton.width = width + "px";
+
             tempButton.left = "5px";
-            tempButton.width = "50px";
-            tempButton.height = "100px";
+            tempButton.height = height+"px";
             tempButton.top = topOffset + "px";
             tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -97,9 +106,9 @@
             // Left arm
             var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
                 "https://i.imgur.com/AqEzmko.png");
-            tempButton.left = "70px";
-            tempButton.width = "50px";
-            tempButton.height = "100px";
+            tempButton.left = 5 + width + 10 + "px";
+            tempButton.width = width + "px";
+            tempButton.height = height+"px";
             tempButton.top = topOffset + "px";
             tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -115,9 +124,9 @@
             // Right Leg
             var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/Y6ANASk.png");
             tempButton.left = "5px";
-            tempButton.width = "50px";
-            tempButton.height = "100px";
-            tempButton.top = topOffset + 110 + "px";
+            tempButton.width = width + "px";
+            tempButton.height = height+"px";
+            tempButton.top = topOffset + height+10 + "px";
             tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
             tempButton.color = "black";
@@ -130,10 +139,10 @@
             advancedTexture.addControl(tempButton);
             // Left Leg
             var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/RX4nZbE.png");
-            tempButton.left = "70px";
-            tempButton.width = "50px";
-            tempButton.height = "100px";
-            tempButton.top = topOffset + 110 + "px";
+            tempButton.left = 5 + width + 10 + "px";
+            tempButton.width = width + "px";
+            tempButton.height = height+"px";
+            tempButton.top = topOffset + height+10 + "px";
             tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
             tempButton.color = "black";
@@ -472,14 +481,13 @@
                 }
                 if (isMobile)
                     max = 14;
-                //console.log(Math.trunc(decalMaterials.length-1/max));\
 
                 var ratio = size.width / size.height;
                 button1.left = (-height - 10) * currentCol;
                 button1.width = height + "px"
                 var calcHeight = height / ratio;
                 button1.height = calcHeight + "px";
-                //console.log(currentTop);
+
                 topPos = 30 + currentTop + "px";
                 currentTop += calcHeight;
                 button1.top = topPos + "px";
@@ -488,10 +496,7 @@
                 button1.color = "black";
                 button1.background = "white";
 
-                //button1.cornerRadius = 20;
-                //button1.thickness = 4;
-                //button1.children[0].color = "#DFF9FB";
-                //button1.children[0].fontSize = 24;
+
                 button1.onPointerUpObservable.add(function () {
                     currentDecalIndex = index;
                     creating = true;
@@ -531,21 +536,18 @@
             createTattoo("Misc", "https://i.imgur.com/CxRmXjR.png")
             createTattoo("Misc", "https://i.imgur.com/lTIZom6.png")
             createTattoo("Misc", "https://i.imgur.com/fOXWSXL.png")
-            createTattoo("Misc", "")
+            // createTattoo("Misc", "")
 
 
 
             var createDecal = function (pickInfo, name) {
                 currentDecalPickInfo = pickInfo;
-                // console.log("create decal:" + name);
                 var material = decalMaterials[currentDecalIndex];
                 ratio = material.diffuseTexture.getSize().width / material.diffuseTexture.getSize().height;
                 var decalSize = new BABYLON.Vector3(ratio * tattooScale, tattooScale, tattooScale);
-                // console.log(ratio);
+
                 var normal = pickInfo.getNormal(true);
-                // if(pickInfo.pickedMesh.scaling.z > 0)
-                //     normal = -normal;
-                console.log(pickInfo.pickedMesh.scaling.z);
+
                 var decal = BABYLON.MeshBuilder.CreateDecal("decal", currentTargetBody, {
                     position: pickInfo.pickedPoint,
                     normal: normal,
@@ -610,8 +612,8 @@
                         if (moving) {
                             moving = false;
                             camera.attachControl(canvas, true);
-                            // currentDecal.dispose();
-                            currentDecal.name = 'placed' + ":" + tattooScale + ";" + tattooAngle + ']' + currentDecalIndex;
+                            currentDecal.dispose();
+                            createDecal(currentDecalPickInfo, "placed")
                         }
                         else {
                             distanceMoved = Math.abs(scene.pointerX - downPosX) + Math.abs(scene.pointerY - downPosY);
