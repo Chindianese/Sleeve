@@ -99,7 +99,7 @@
             tempButton.thickness = 2;
 
             tempButton.onPointerUpObservable.add(function () {
-                console.log('right arm');
+                //console.log('right arm');
                 selectMesh(0);
             });
             advancedTexture.addControl(tempButton);
@@ -117,7 +117,7 @@
             tempButton.thickness = 2;
 
             tempButton.onPointerUpObservable.add(function () {
-                console.log('left arm')
+                //console.log('left arm')
                 selectMesh(1);
             });
             advancedTexture.addControl(tempButton);
@@ -133,7 +133,7 @@
             tempButton.background = "";
             tempButton.thickness = 2;
             tempButton.onPointerUpObservable.add(function () {
-                console.log('right leg')
+                //console.log('right leg')
                 selectMesh(2);
             });
             advancedTexture.addControl(tempButton);
@@ -149,7 +149,7 @@
             tempButton.background = "";
             tempButton.thickness = 2;
             tempButton.onPointerUpObservable.add(function () {
-                console.log('left leg')
+                //console.log('left leg')
                 selectMesh(3);
             });
             advancedTexture.addControl(tempButton);
@@ -576,7 +576,7 @@
                 // console.log(decalIndex);
                 tattooScale = parseFloat(scale);
                 tattooAngle = parseFloat(angle);
-                console.log('decalindex:' + decalIndex);
+                // console.log('decalindex:' + decalIndex);
                 currentDecalIndex = parseInt(decalIndex);
                 setTimeout(function () {
                     camera.detachControl(canvas);
@@ -632,7 +632,7 @@
                                 if (armPick.hit) {
                                     currentDecal.dispose();
                                     currentDecal = createDecal(armPick, "placed");
-                                    console.log('placed');
+                                    // console.log('placed');
                                 }
 
                             }
