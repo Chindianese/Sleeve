@@ -617,7 +617,7 @@
                             moving = false;
                             camera.attachControl(canvas, true);
                             currentDecal.dispose();
-                            createDecal(currentDecalPickInfo, "placed")
+                            currentDecal = createDecal(currentDecalPickInfo, "placed")
                         }
                         else {
                             distanceMoved = Math.abs(scene.pointerX - downPosX) + Math.abs(scene.pointerY - downPosY);
