@@ -540,12 +540,11 @@
 
 
 
-            var createDecal = function (pickInfo, name) {
+            var createDecal = function (pickInfo, type) {
                 currentDecalPickInfo = pickInfo;
                 var material = decalMaterials[currentDecalIndex];
                 ratio = material.diffuseTexture.getSize().width / material.diffuseTexture.getSize().height;
                 var decalSize = new BABYLON.Vector3(ratio * tattooScale, tattooScale, tattooScale);
-
                 var normal = pickInfo.getNormal(true);
 
                 var decal = BABYLON.MeshBuilder.CreateDecal("decal", currentTargetBody, {
@@ -557,8 +556,9 @@
                     localMode: true
                 });
                 decal.material = material;
-                decal.name = name + ':' + tattooScale + ";" + tattooAngle + ']' + currentDecalIndex;
-                // console.log( decal.name);
+                // decal.name = name + ':' + tattooScale + ";" + tattooAngle + ']' + currentDecalIndex;
+                decal.data = {type: type, scale: tattooScale, angle: tattooAngle, decalIndex: currentDecalIndex};
+                // console.log( decal.data);
                 return decal;
 
             }
@@ -569,14 +569,14 @@
                 // pickInfo.pickedMesh.dispose();
                 moving = true;
                 currentDecal = pickInfo.pickedMesh;
-                var scale = currentDecal.name.substring(currentDecal.name.indexOf(':') + 1, currentDecal.name.indexOf(';'));
-                var rotation = currentDecal.name.substring(currentDecal.name.indexOf(';') + 1, currentDecal.name.indexOf(']'));
-                var decalIndex = currentDecal.name.substring(currentDecal.name.indexOf(']') + 1);
+                var scale = currentDecal.data.scale;
+                var angle =  currentDecal.data.angle;
+                var decalIndex = currentDecal.data.decalIndex;
                 //console.log(rotation);
                 // console.log(decalIndex);
                 tattooScale = parseFloat(scale);
-                tattooAngle = parseFloat(rotation);
-                //console.log('decalindex:' + decalIndex);
+                tattooAngle = parseFloat(angle);
+                console.log('decalindex:' + decalIndex);
                 currentDecalIndex = parseInt(decalIndex);
                 setTimeout(function () {
                     camera.detachControl(canvas);
@@ -599,7 +599,10 @@
                             var result = scene.multiPick(scene.unTranslatedPointer.x, scene.unTranslatedPointer.y);
                             var pickInfo;
                             for (i = 0; i < result.length; i++) {
-                                if (result[i].pickedMesh.name.includes('placed')) {
+                                // console.log(result[i]);
+                                if(bodyMeshes.includes(result[i].pickedMesh))
+                                continue;
+                                if (result[i].pickedMesh.data.type == "placed") {
                                     pickInfo = result[i];
                                     break;
                                 }
@@ -621,7 +624,8 @@
 
                             if (creating && distanceMoved < 5) {
                                 creating = false;
-                                var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh === currentTargetBody; });
+                                var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) 
+                                { return mesh === currentTargetBody; });
                                 // var result = scene.multiPick(scene.unTranslatedPointer.x, scene.unTranslatedPointer.y);
                                 // console.log(result);
 
@@ -652,7 +656,9 @@
                         var result = scene.multiPick(scene.unTranslatedPointer.x, scene.unTranslatedPointer.y);
                         var pickInfo;
                         for (i = 0; i < result.length; i++) {
-                            if (result[i].pickedMesh.name.includes('placed')) {
+                            if(bodyMeshes.includes(result[i].pickedMesh))
+                                continue;
+                            if (result[i].pickedMesh.data.type == 'placed') {
                                 pickInfo = result[i];
                                 break;
                             }
@@ -676,9 +682,10 @@
                             if (rotating) {
                                 tattooAngle += (distanceMovedX + distanceMovedY) * 0.01;
                             }
-                            var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh === currentTargetBody; });
+                            var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) 
+                            { return mesh === currentTargetBody; });
                             if (armPick.hit) {
-                                if (currentDecal && currentDecal.name.includes('moving'))
+                                if (currentDecal && currentDecal.data.type == 'moving')
                                     currentDecal.dispose();
                                 currentDecal = createDecal(armPick, 'moving');
                             }
@@ -695,7 +702,7 @@
                             }
                             var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh === currentTargetBody; });
 
-                            if (currentDecal && currentDecal.name.includes('creating'))
+                            if (currentDecal && currentDecal.data.type == 'creating')
                                 currentDecal.dispose();
                             if (armPick.hit) {
                                 currentDecal = createDecal(armPick, 'creating');
