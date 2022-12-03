@@ -65,7 +65,7 @@
     var originalScale = 4;
     var tattooScale = originalScale;
     var tattooAngle = 0;
-
+    const minScale = 0.9;
     var isMobile = true;
     
     if(navigator && navigator.userAgentData)
@@ -251,10 +251,10 @@
         //button1.thickness = 4;
         numSkin++;
         button1.onPointerUpObservable.add(function () {
-                      if(!currentDecal)
+        if(!currentDecal)
             return;
                tattooScale -= 0.1;
-               tattooScale = Math.max(0.1,tattooScale);
+               tattooScale = Math.max(minScale,tattooScale);
            currentDecal.dispose();
            currentDecal = createDecal(currentDecalPickInfo, "placed");
         });
@@ -511,17 +511,17 @@
                 }
                 break;
             case BABYLON.PointerEventTypes.POINTERMOVE:
-
+                
                 if (moving) {
                     //console.log(currentDecal);
                     currentDecal.dispose();
                     //distanceMoved = Math.abs(scene.pointerX - prevPosX) + Math.abs(scene.pointerY - prevPosY);
                     distanceMovedY = -(scene.pointerY - prevPosY);
                     distanceMovedX = (scene.pointerX - prevPosX);
-
+                    
                     if (scaling) {
                         tattooScale += (distanceMovedY) * 0.1;
-                        tattooScale = Math.max(0.1,tattooScale);
+                        tattooScale = Math.max(minScale,tattooScale);
                     }
                     if (rotating) {
                         tattooAngle += (distanceMovedX + distanceMovedY) * 0.01;
@@ -539,6 +539,7 @@
                     distanceMovedX = -(scene.pointerX - prevPosX);
                     if (scaling) {
                         tattooScale += (distanceMovedX + distanceMovedY) * 0.1;
+                        tattooScale = Math.max(minScale,tattooScale);
                     }
                     if (rotating) {
                         tattooAngle += (distanceMovedX + distanceMovedY) * 0.01;
