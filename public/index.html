@@ -54,13 +54,22 @@
                 bodyMeshes[0].setEnabled(false);
             if (bodyMeshes[1])
                 bodyMeshes[1].setEnabled(false);
-            switch (index) {
-
+            if (bodyMeshes[2])
+                bodyMeshes[2].setEnabled(false);
+            if (bodyMeshes[3])
+                bodyMeshes[3].setEnabled(false);
+            switch (index) { // ik this is a dumb switch. originally i had some logic in it be rmved it
                 case 0: // right arm
                     currentTargetBody = bodyMeshes[0]
                     break;
                 case 1: // left arm
                     currentTargetBody = bodyMeshes[1]
+                    break;
+                case 2: // right leg
+                    currentTargetBody = bodyMeshes[2]
+                    break;
+                case 3: // left leg
+                    currentTargetBody = bodyMeshes[3]
                     break;
             }
             currentTargetBody.setEnabled(true)
@@ -103,21 +112,6 @@
                 selectMesh(1);
             });
             advancedTexture.addControl(tempButton);
-            // Left Leg
-            var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/RX4nZbE.png");
-            tempButton.left = "70px";
-            tempButton.width = "50px";
-            tempButton.height = "100px";
-            tempButton.top = topOffset + 110 + "px";
-            tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            tempButton.color = "black";
-            tempButton.background = "";
-            tempButton.thickness = 2;
-            tempButton.onPointerUpObservable.add(function () {
-
-            });
-            advancedTexture.addControl(tempButton);
             // Right Leg
             var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/Y6ANASk.png");
             tempButton.left = "5px";
@@ -130,7 +124,24 @@
             tempButton.background = "";
             tempButton.thickness = 2;
             tempButton.onPointerUpObservable.add(function () {
-
+                console.log('right leg')
+                selectMesh(2);
+            });
+            advancedTexture.addControl(tempButton);
+            // Left Leg
+            var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/RX4nZbE.png");
+            tempButton.left = "70px";
+            tempButton.width = "50px";
+            tempButton.height = "100px";
+            tempButton.top = topOffset + 110 + "px";
+            tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            tempButton.color = "black";
+            tempButton.background = "";
+            tempButton.thickness = 2;
+            tempButton.onPointerUpObservable.add(function () {
+                console.log('left leg')
+                selectMesh(3);
             });
             advancedTexture.addControl(tempButton);
         }
@@ -153,10 +164,10 @@
                     bodyMeshes[1] = leftArm;
                     // set up right arm
                     rightArm.scaling = new BABYLON.Vector3(startingScale, startingScale, -startingScale);
-                    rightArm.rotation = new BABYLON.Vector3(0, Math.PI/180*200, 0);
+                    rightArm.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 200, 0);
                     // set up left arm
                     leftArm.scaling = new BABYLON.Vector3(startingScale, startingScale, startingScale);
-                    leftArm.rotation = new BABYLON.Vector3(0, Math.PI/180*20, 0);
+                    leftArm.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 20, 0);
                     selectMesh(0);
                 });
 
@@ -164,16 +175,24 @@
                 "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "leg_midpoly.obj",
                 scene,
                 function (newMeshes) {
-                    mesh = newMeshes[0];
-                    mesh.setEnabled(false);
-                    bodyMeshes[2] = mesh;
-                    bodyMeshes[3] = mesh;
-
                     scale = 2;
-                    mesh.scaling = new BABYLON.Vector3(scale, scale, scale);
-                    mesh.material = armMaterial;
-                    mesh.position = new BABYLON.Vector3(0, 3, 0);
+                    //
+                    var rightLeg = newMeshes[0];
+                    bodyMeshes[2] = rightLeg;
+                    rightLeg.name = "Right Leg"
+                    rightLeg.setEnabled(false);
+                    rightLeg.material = armMaterial;
 
+                    rightLeg.position = new BABYLON.Vector3(0, 3, 0);
+                    rightLeg.scaling = new BABYLON.Vector3(scale, scale, scale);
+                    var leftLeg = rightLeg.clone("Left Leg");
+                    bodyMeshes[3] = leftLeg;
+                    // set up right leg
+                    rightLeg.scaling = new BABYLON.Vector3(startingScale, startingScale, -startingScale);
+                    rightLeg.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 200, 0);
+                    // set up left leg
+                    leftLeg.scaling = new BABYLON.Vector3(startingScale, startingScale, startingScale);
+                    leftLeg.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 20, 0);
                     // selectMesh(0);
                 });
         }
