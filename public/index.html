@@ -213,7 +213,7 @@
 
         var width = 140;
         if(!isMobile)
-        width = 90;
+        width = 60;
         var transOffset = 180;
 
  var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "+");
@@ -254,6 +254,7 @@
                       if(!currentDecal)
             return;
                tattooScale -= 0.1;
+               tattooScale = Math.max(0.1,tattooScale);
            currentDecal.dispose();
            currentDecal = createDecal(currentDecalPickInfo, "placed");
         });
@@ -520,6 +521,7 @@
 
                     if (scaling) {
                         tattooScale += (distanceMovedY) * 0.1;
+                        tattooScale = Math.max(0.1,tattooScale);
                     }
                     if (rotating) {
                         tattooAngle += (distanceMovedX + distanceMovedY) * 0.01;
