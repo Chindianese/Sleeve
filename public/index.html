@@ -713,12 +713,12 @@
                     case BABYLON.PointerEventTypes.POINTERUP:
                         if (selected) {
                             selected = false;
-                            moved = false;
                             camera.attachControl(canvas, true);
                             if (moved) {
                                 currentDecal.dispose();
                                 currentDecal = createDecal(currentDecalPickInfo, "placed")
                             }
+                            moved = false;
                         }
                         else {
                             distanceMoved = Math.abs(scene.pointerX - downPosX) + Math.abs(scene.pointerY - downPosY);
@@ -771,7 +771,7 @@
                     case BABYLON.PointerEventTypes.POINTERMOVE:
                         if (selected) {
                             //console.log(currentDecal);
-
+                            moved = true;
                             currentDecal.dispose();
                             //distanceMoved = Math.abs(scene.pointerX - prevPosX) + Math.abs(scene.pointerY - prevPosY);
                             distanceMovedY = -(scene.pointerY - prevPosY);
