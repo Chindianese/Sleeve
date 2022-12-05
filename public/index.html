@@ -420,7 +420,10 @@
                 if (url == "")
                     return;
                 if (!url.includes("https://i.imgur.com/"))
+                {
+                    alert("Failed to create tattoo")
                     return;
+                }
                 createTattooMaterial(url);
 
             }
@@ -501,9 +504,7 @@
                 addButton.top = -10;
                 addButton.onPointerUpObservable.add(function () {
                     var url = input.text;
-                    if (url.includes("https://i.imgur.com/")) {
                         createTattoo("custom", url);
-                    }
                     input.text = "";
                 });
 
@@ -639,8 +640,9 @@
             createTattoo("Feather", "https://i.imgur.com/KLG4ktg.png")
             createTattoo("Sparkle", "https://i.imgur.com/sIBZJlT.png")
             createTattoo("Hand", "https://i.imgur.com/xn33EFK.png")
-            createTattoo("Wolf", "")
-            createTattoo("Misc", "")
+            createTattoo("Hand", "https://i.imgur.com/606VJX0.png")
+            createTattoo("Hand", "https://i.imgur.com/7ez2JzE.png")
+            // createTattoo("Misc", "")
 
 
 
