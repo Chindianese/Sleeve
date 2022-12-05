@@ -62,9 +62,9 @@
             // SCENE
             var scene = new BABYLON.Scene(engine);
             var clearColor = 0.06;
-            var ambientColor = 0.1;
-            scene.clearColor = new BABYLON.Color3(clearColor, clearColor,clearColor);
-            scene.ambientColor = new BABYLON.Color3(ambientColor,ambientColor,ambientColor);
+            var ambientColor = 0.2;
+            scene.clearColor = new BABYLON.Color3(clearColor, clearColor, clearColor);
+            scene.ambientColor = new BABYLON.Color3(ambientColor, ambientColor, ambientColor);
             var canvas = engine.getRenderingCanvas();
             // END SCENE
             // VARIABLES
@@ -106,10 +106,10 @@
             // END LIGHTING
             // GUI SECTION 
             var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-            if(isVertical)
-            advancedTexture.idealHeight = 1080;
+            if (isVertical)
+                advancedTexture.idealHeight = 1080;
             else
-            advancedTexture.idealWidth = 1920;
+                advancedTexture.idealWidth = 1920;
             // var baseHeight = advancedTexture.getInternalTexture();
             // console.log(baseHeight)
             var numSkin = 0;
@@ -137,19 +137,19 @@
             }
             var createBodyButtons = function (armMaterial) {
                 var topOffset = 200;
-                if(isVertical)
-                topOffset = 200+200;
+                if (isVertical)
+                    topOffset = 200 + 200;
                 width = 60;
                 height = 90;
                 left = 70;
-                if(isVertical)
-                left = 5;
+                if (isVertical)
+                    left = 5;
                 // Right arm
                 var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
                     "https://i.imgur.com/W1I0Duq.png");
                 tempButton.width = width + "px";
 
-                tempButton.left = left+"px";
+                tempButton.left = left + "px";
                 tempButton.height = height + "px";
                 tempButton.top = topOffset + "px";
                 tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -180,13 +180,13 @@
                 tempButton.onPointerUpObservable.add(function () {
                     //console.log('left arm')
                     selectMesh(1);
-                  
+
                 });
                 bodyButtons[1] = tempButton;
                 advancedTexture.addControl(tempButton);
                 // Right Leg
                 var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/Y6ANASk.png");
-                tempButton.left = left+"px";
+                tempButton.left = left + "px";
                 tempButton.width = width + "px";
                 tempButton.height = height + "px";
                 tempButton.top = topOffset + height + "px";
@@ -228,8 +228,8 @@
                     bodyMeshes[2].setEnabled(false);
                 if (bodyMeshes[3])
                     bodyMeshes[3].setEnabled(false);
-                bodyButtons.forEach((button)=>{    button.background = "";})
-                
+                bodyButtons.forEach((button) => { button.background = ""; })
+
                 switch (index) { // ik this is a dumb switch. originally i had some logic in it be rmved it
                     case 0: // right arm
                         currentTargetBody = bodyMeshes[0]
@@ -299,20 +299,20 @@
             }
             // Tattoo
             var currentTop = 30;
-            var currentCol = 0;             
+            var currentCol = 0;
             var createTattooButton = function (name, url, index, size) {
                 var buttonSize = 150;
-                if(isVertical)
+                if (isVertical)
                     buttonSize = 90;
                 var ratio = size.width / size.height;
                 var calcHeight = buttonSize / ratio;
-               
+
                 var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
                 //if (currentTop + calcHeight > window.innerHeight) {
-                console.log(currentTop+calcHeight)
-                console.log(advancedTexture.getBaseSize().height)
+                //  console.log(currentTop+calcHeight)
+                //console.log(advancedTexture.getBaseSize().height)
                 var compareHeight = advancedTexture.getBaseSize().height;
-                if (currentTop + calcHeight+30 > compareHeight) {
+                if (currentTop + calcHeight + 30 > compareHeight) {
                     currentTop = 30;
                     currentCol++;
                 }
@@ -368,6 +368,7 @@
             armMaterial.diffuseColor = col;
             armMaterial.ambientColor = col;
             armMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            armMaterial.diffuseTexture = new BABYLON.Texture("https://media.istockphoto.com/id/176503085/photo/close-up-of-textured-light-colored-skin-with-beauty-spot.jpg?b=1&s=170667a&w=0&k=20&c=jLzfoTlwTf8Wo0woxwm7R_9nfsXebQ09cB-hLx782uc=", scene);
             // END MATERIALS
             loadModels(scene, armMaterial);
 
@@ -413,7 +414,7 @@
                 input.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
                 input.fontSize = 24;
                 input.height = "35px";
-                input.width = window.innerWidth/3+"px";
+                input.width = window.innerWidth / 3 + "px";
                 input.left = "5px";
                 input.top = -10;
 
@@ -461,7 +462,7 @@
             // transform buttons
             var width = 80;
             var transOffset = 170;
-            var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "+"); 
+            var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "+");
             button1.width = width + "px"
             button1.height = width + "px";
             button1.top = -transOffset - 3 * width + "px";
@@ -550,7 +551,6 @@
 
             createTattoo("Misc", "https://i.imgur.com/7sYpTGI.png")
             createTattoo("Misc", "https://i.imgur.com/qembEh7.png")
-            createTattoo("Misc", "https://i.imgur.com/7DirhDM.png")
             createTattoo("Misc", "https://i.imgur.com/O8qyhyZ.png")
             createTattoo("Misc", "https://i.imgur.com/sAWJt05.png")
             createTattoo("Misc", "https://i.imgur.com/CxRmXjR.png")
@@ -759,6 +759,26 @@
                                 break
                         }
                         break;
+                }
+            });
+
+                    // Activate the clipboard events listener
+        advancedTexture.registerClipboardEvents();
+            // Add event listener to onClipboardObservable
+            advancedTexture.onClipboardObservable.add((ev) => {
+                // Copy listener
+                if (ev.type === BABYLON.ClipboardEventTypes.COPY) {
+                    // console.log("copy")
+
+                }
+                // Paste listener
+                if (ev.type === BABYLON.ClipboardEventTypes.PASTE) {
+                    //console.log("paste")
+                    //console.log(ev.event.clipboardData)
+                    var textData = ev.event.clipboardData.getData("text/plain");
+                    // console.log(textData)
+                    if(textData.includes("https://i.imgur.com/"))
+                        createTattoo("", textData);
                 }
             });
 
