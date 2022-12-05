@@ -69,7 +69,8 @@
             // END SCENE
             // VARIABLES
             var scrollWidth = 0.2;
-            var moving = false;
+            var selected = false;
+            var moved = false;
             var scaling = false;
             var rotating = false;
             var currentDecal = 0;
@@ -321,7 +322,7 @@
                 //if (currentTop + calcHeight > window.innerHeight) {
                 var compareHeight = advancedTexture.getBaseSize().height;
                 var compareWidth = advancedTexture.getBaseSize().width;
-                buttonSize = compareWidth * scrollWidth-15;
+                buttonSize = compareWidth * scrollWidth - 15;
                 var calcHeight = buttonSize / ratio;
                 //compareHeight = advancedTexture.getSize().height
                 //console.log(currentTop+calcHeight)
@@ -334,7 +335,7 @@
                 // button1.top = currentTop + "px";
                 currentTop += calcHeight;
 
-               // button1.left = (-buttonSize - 10) * currentCol;
+                // button1.left = (-buttonSize - 10) * currentCol;
                 button1.width = buttonSize + "px"
                 button1.height = calcHeight + "px";
                 button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
@@ -359,25 +360,25 @@
 
                 });
                 // advancedTexture.addControl(button1); 
-                button1.onPointerMoveObservable.add((data)=>{
-                    if(!scrolling)
-                    return;
+                button1.onPointerMoveObservable.add((data) => {
+                    if (!scrolling)
+                        return;
                     //console.log("move");
                     // console.log(data)
                     distanceMoved = data.y - scrollPos;
                     scrollPos = data.y;
                     //console.log(distanceMoved)
                     compareWidth = advancedTexture.getSize().width
-                    sv.verticalBar.value -=distanceMoved/compareWidth*0.3;                    
+                    sv.verticalBar.value -= distanceMoved / compareWidth * 0.3;
                 });
-                button1.onPointerDownObservable.add((data)=>{                    
+                button1.onPointerDownObservable.add((data) => {
                     scrollPos = data.y
                     scrolling = true;
                 });
-                gd.height = currentTop+"px";
-                gd.addRowDefinition(calcHeight,true)
+                gd.height = currentTop + "px";
+                gd.addRowDefinition(calcHeight, true)
 
-                gd.addControl(button1, index,0)
+                gd.addControl(button1, index, 0)
             }
             var createTattooMaterial = function (url) {
                 var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
@@ -662,11 +663,10 @@
 
             }
             var creating = false;
-            var moving = false;
             var currentDecal = null;
             var selectDecal = function (pickInfo) {
                 // pickInfo.pickedMesh.dispose();
-                moving = true;
+                selected = true
                 currentDecal = pickInfo.pickedMesh;
                 var scale = currentDecal.data.scale;
                 var angle = currentDecal.data.angle;
@@ -711,11 +711,14 @@
                         }
                         break;
                     case BABYLON.PointerEventTypes.POINTERUP:
-                        if (moving) {
-                            moving = false;
+                        if (selected) {
+                            selected = false;
+                            moved = false;
                             camera.attachControl(canvas, true);
-                            currentDecal.dispose();
-                            currentDecal = createDecal(currentDecalPickInfo, "placed")
+                            if (moved) {
+                                currentDecal.dispose();
+                                currentDecal = createDecal(currentDecalPickInfo, "placed")
+                            }
                         }
                         else {
                             distanceMoved = Math.abs(scene.pointerX - downPosX) + Math.abs(scene.pointerY - downPosY);
@@ -766,8 +769,9 @@
                         }
                         break;
                     case BABYLON.PointerEventTypes.POINTERMOVE:
-                        if (moving) {
+                        if (selected) {
                             //console.log(currentDecal);
+
                             currentDecal.dispose();
                             //distanceMoved = Math.abs(scene.pointerX - prevPosX) + Math.abs(scene.pointerY - prevPosY);
                             distanceMovedY = -(scene.pointerY - prevPosY);
