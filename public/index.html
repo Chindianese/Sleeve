@@ -75,7 +75,7 @@
             var rotating = false;
             var currentDecal = 0;
             var currentDecalPickInfo;
-            var originalScale = 4;
+            var originalScale = 2;
             var tattooScale = originalScale;
             var tattooAngle = 0;
             const minScale = 0.9;
@@ -85,12 +85,13 @@
             var currentTargetBody;
             var bodyMeshes = [null, null, null, null];
             var bodyButtons = [null, null, null, null];
-            var startingScale = 2;
+            var startingScale = 1;
             var inputFocus = false;
             var gd;
             var scrolling = false;
             var sv;
             var scrollPos = 0;
+            var startHeight= 1;
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
             isVertical = window.innerHeight > window.innerWidth;
@@ -101,11 +102,15 @@
             // END VARIABLES
             // CAMERA
             // This creates and positions an ArcRotateCamera
-            var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 3, Math.PI / 3, 60,
+            var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 3, Math.PI / 3, 30,
                 BABYLON.Vector3.Zero(), scene);
             // This targets the camera to scene origin
             camera.setTarget(BABYLON.Vector3.Zero());
-            camera.wheelPrecision = 5; //Mouse wheel speed
+            camera.wheelPrecision = 12; //Mouse wheel speed
+            //console.log(camera.panningSensibility); //Mouse wheel speed
+            camera.panningSensibility = 1500;
+            camera.pinchToPanMaxDistanceSearch = 50
+            camera.pinchPrecision = 1000
             // This attaches the camera to the canvas
             camera.attachControl(canvas, true);
             // END CAMERA
@@ -271,15 +276,13 @@
                     "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "arm_midpoly.obj",
                     scene,
                     function (newMeshes) {
-                        scale = 2;
                         //
                         var rightArm = newMeshes[0];
                         rightArm.name = "Right Arm"
                         currentTargetBody = rightArm;
                         rightArm.material = armMaterial;
                         bodyMeshes[0] = rightArm;
-                        rightArm.position = new BABYLON.Vector3(0, 3, 0);
-                        rightArm.scaling = new BABYLON.Vector3(scale, scale, scale);
+                        rightArm.position = new BABYLON.Vector3(0, startHeight, 0);
                         var leftArm = rightArm.clone("Left Arm");
                         bodyMeshes[1] = leftArm;
                         // set up right arm
@@ -303,8 +306,7 @@
                         rightLeg.setEnabled(false);
                         rightLeg.material = armMaterial;
 
-                        rightLeg.position = new BABYLON.Vector3(0, 3, 0);
-                        rightLeg.scaling = new BABYLON.Vector3(scale, scale, scale);
+                        rightLeg.position = new BABYLON.Vector3(0, startHeight, 0);
                         var leftLeg = rightLeg.clone("Left Leg");
                         bodyMeshes[3] = leftLeg;
                         // set up right leg
@@ -683,9 +685,7 @@
                 tattooAngle = parseFloat(angle);
                 // console.log('decalindex:' + decalIndex);
                 currentDecalIndex = parseInt(decalIndex);
-                setTimeout(function () {
-                    camera.detachControl(canvas);
-                }, 0);
+                camera.detachControl(canvas);
             }
 
 
@@ -718,8 +718,9 @@
                         break;
                     case BABYLON.PointerEventTypes.POINTERUP:
                         if (selected) {
-                            selected = false;
                             camera.attachControl(canvas, true);
+                            console.log("attached")
+                            selected = false;
                             if (moved) {
                                 currentDecal.dispose();
                                 currentDecal = createDecal(currentDecalPickInfo, "placed")
