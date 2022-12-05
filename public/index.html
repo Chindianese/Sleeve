@@ -43,168 +43,7 @@
 <body>
     <canvas id="renderCanvas"></canvas>
     <script>
-        var isMobile = true;
-        var currentTargetBody;
-        var bodyMeshes = [null, null, null, null];
-        var startingScale = 2;
-        if (navigator && navigator.userAgentData)
-            isMobile = navigator.userAgentData.mobile; //resolves true/false
-        var selectMesh = function (index) {
-            if (bodyMeshes[0])
-                bodyMeshes[0].setEnabled(false);
-            if (bodyMeshes[1])
-                bodyMeshes[1].setEnabled(false);
-            if (bodyMeshes[2])
-                bodyMeshes[2].setEnabled(false);
-            if (bodyMeshes[3])
-                bodyMeshes[3].setEnabled(false);
-            switch (index) { // ik this is a dumb switch. originally i had some logic in it be rmved it
-                case 0: // right arm
-                    currentTargetBody = bodyMeshes[0]
-                    break;
-                case 1: // left arm
-                    currentTargetBody = bodyMeshes[1]
-                    break;
-                case 2: // right leg
-                    currentTargetBody = bodyMeshes[2]
-                    break;
-                case 3: // left leg
-                    currentTargetBody = bodyMeshes[3]
-                    break;
-            }
-            currentTargetBody.setEnabled(true)
-        }
-        var createBodyButtons = function (advancedTexture, armMaterial) {
-            var topOffset = 450;
-            if (isMobile)
-                topOffset = 550;
-            var width = 65;
-            if (isMobile)
-                width = 90;
-            var height = 110;
-            if (isMobile)
-                height = 170;
-            // Right arm
-            var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
-                "https://i.imgur.com/W1I0Duq.png");
-            tempButton.width = width + "px";
 
-            tempButton.left = "5px";
-            tempButton.height = height+"px";
-            tempButton.top = topOffset + "px";
-            tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            tempButton.color = "black";
-            tempButton.background = "";
-            tempButton.thickness = 2;
-
-            tempButton.onPointerUpObservable.add(function () {
-                //console.log('right arm');
-                selectMesh(0);
-            });
-            advancedTexture.addControl(tempButton);
-            // Left arm
-            var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
-                "https://i.imgur.com/AqEzmko.png");
-            tempButton.left = 5 + width + 10 + "px";
-            tempButton.width = width + "px";
-            tempButton.height = height+"px";
-            tempButton.top = topOffset + "px";
-            tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            tempButton.color = "black";
-            tempButton.background = "";
-            tempButton.thickness = 2;
-
-            tempButton.onPointerUpObservable.add(function () {
-                //console.log('left arm')
-                selectMesh(1);
-            });
-            advancedTexture.addControl(tempButton);
-            // Right Leg
-            var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/Y6ANASk.png");
-            tempButton.left = "5px";
-            tempButton.width = width + "px";
-            tempButton.height = height+"px";
-            tempButton.top = topOffset + height+10 + "px";
-            tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            tempButton.color = "black";
-            tempButton.background = "";
-            tempButton.thickness = 2;
-            tempButton.onPointerUpObservable.add(function () {
-                //console.log('right leg')
-                selectMesh(2);
-            });
-            advancedTexture.addControl(tempButton);
-            // Left Leg
-            var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/RX4nZbE.png");
-            tempButton.left = 5 + width + 10 + "px";
-            tempButton.width = width + "px";
-            tempButton.height = height+"px";
-            tempButton.top = topOffset + height+10 + "px";
-            tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            tempButton.color = "black";
-            tempButton.background = "";
-            tempButton.thickness = 2;
-            tempButton.onPointerUpObservable.add(function () {
-                //console.log('left leg')
-                selectMesh(3);
-            });
-            advancedTexture.addControl(tempButton);
-        }
-
-        var loadModels = function (scene, armMaterial) {
-            BABYLON.SceneLoader.ImportMesh("",
-                "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "arm_midpoly.obj",
-                scene,
-                function (newMeshes) {
-                    scale = 2;
-                    //
-                    var rightArm = newMeshes[0];
-                    rightArm.name = "Right Arm"
-                    currentTargetBody = rightArm;
-                    rightArm.material = armMaterial;
-                    bodyMeshes[0] = rightArm;
-                    rightArm.position = new BABYLON.Vector3(0, 3, 0);
-                    rightArm.scaling = new BABYLON.Vector3(scale, scale, scale);
-                    var leftArm = rightArm.clone("Left Arm");
-                    bodyMeshes[1] = leftArm;
-                    // set up right arm
-                    rightArm.scaling = new BABYLON.Vector3(startingScale, startingScale, -startingScale);
-                    rightArm.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 200, 0);
-                    // set up left arm
-                    leftArm.scaling = new BABYLON.Vector3(startingScale, startingScale, startingScale);
-                    leftArm.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 20, 0);
-                    selectMesh(0);
-                });
-
-            BABYLON.SceneLoader.ImportMesh("",
-                "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "leg_midpoly.obj",
-                scene,
-                function (newMeshes) {
-                    scale = 2;
-                    //
-                    var rightLeg = newMeshes[0];
-                    bodyMeshes[2] = rightLeg;
-                    rightLeg.name = "Right Leg"
-                    rightLeg.setEnabled(false);
-                    rightLeg.material = armMaterial;
-
-                    rightLeg.position = new BABYLON.Vector3(0, 3, 0);
-                    rightLeg.scaling = new BABYLON.Vector3(scale, scale, scale);
-                    var leftLeg = rightLeg.clone("Left Leg");
-                    bodyMeshes[3] = leftLeg;
-                    // set up right leg
-                    rightLeg.scaling = new BABYLON.Vector3(startingScale, startingScale, -startingScale);
-                    rightLeg.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 200, 0);
-                    // set up left leg
-                    leftLeg.scaling = new BABYLON.Vector3(startingScale, startingScale, startingScale);
-                    leftLeg.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 20, 0);
-                    // selectMesh(0);
-                });
-        }
         var canvas = document.getElementById("renderCanvas");
 
         var startRenderLoop = function (engine, canvas) {
@@ -220,11 +59,18 @@
         var sceneToRender = null;
         var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false }); };
         var createScene = function () {
+            // SCENE
             var scene = new BABYLON.Scene(engine);
+            var clearColor = 0.06;
+            var ambientColor = 0.1;
+            scene.clearColor = new BABYLON.Color3(clearColor, clearColor,clearColor);
+            scene.ambientColor = new BABYLON.Color3(ambientColor,ambientColor,ambientColor);
+            var canvas = engine.getRenderingCanvas();
+            // END SCENE
+            // VARIABLES
             var moving = false;
             var scaling = false;
             var rotating = false;
-            var canvas = engine.getRenderingCanvas();
             var currentDecal = 0;
             var currentDecalPickInfo;
             var originalScale = 4;
@@ -232,15 +78,16 @@
             var tattooAngle = 0;
             const minScale = 0.9;
             var isLeft = true;
-
-            scene.clearColor = new BABYLON.Color3(0.16, 0.16, 0.16);
-            scene.ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-            //Adding a light
-            var light = new BABYLON.HemisphericLight("Hemi", new BABYLON.Vector3(0, 1, 0), scene);
-            light.intensity = 1.0;
-            // var light = new BABYLON.HemisphericLight("Hemi", new BABYLON.Vector3(0, -1, 0), scene);
-            // light.intensity = 0.2;
-
+            var isMobile = true;
+            var isVertical = false;
+            var currentTargetBody;
+            var bodyMeshes = [null, null, null, null];
+            var startingScale = 2;
+            if (navigator && navigator.userAgentData)
+                isMobile = navigator.userAgentData.mobile; //resolves true/false
+            isVertical = window.innerHeight > window.innerWidth;
+            // END VARIABLES
+            // CAMERA
             // This creates and positions an ArcRotateCamera
             var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 3, Math.PI / 3, 60,
                 BABYLON.Vector3.Zero(), scene);
@@ -249,17 +96,267 @@
             camera.wheelPrecision = 5; //Mouse wheel speed
             // This attaches the camera to the canvas
             camera.attachControl(canvas, true);
+            // END CAMERA
+            // LIGHTING
+            var light = new BABYLON.HemisphericLight("Hemi", new BABYLON.Vector3(0, 1, 0), scene);
+            light.intensity = 1.0;
+            // var light = new BABYLON.HemisphericLight("Hemi", new BABYLON.Vector3(0, -1, 0), scene);
+            // light.intensity = 0.2;
+            // END LIGHTING
+            // GUI SECTION 
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+            //advancedTexture.idealWidth = 1080;
+            // var baseHeight = advancedTexture.getInternalTexture();
+            // console.log(baseHeight)
+            var numSkin = 0;
+            var createSkinColorButton = function (color) {
+                var offset = 210;
+                col = color.toHexString();
+                var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "");
+                button1.width = "60px"
+                button1.color = col;
+                button1.background = col;
+                height = 60;
+                button1.height = height + "px";
+                button1.left = "5px";
+                button1.top = offset + numSkin * (height + 5) + "px";
+                button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+                button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                button1.cornerRadius = 15;
+                //button1.thickness = 4;
+                numSkin++;
+                button1.onPointerUpObservable.add(function () {
+                    armMaterial.diffuseColor = color;
+                    armMaterial.ambientColor = color;
+                });
+                advancedTexture.addControl(button1);
+            }
+            var createBodyButtons = function (armMaterial) {
+                var topOffset = 210;
+                width = 60;
+                height = 90;
+                left = 70;
+                // Right arm
+                var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
+                    "https://i.imgur.com/W1I0Duq.png");
+                tempButton.width = width + "px";
 
+                tempButton.left = left+"px";
+                tempButton.height = height + "px";
+                tempButton.top = topOffset + "px";
+                tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+                tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                tempButton.color = "black";
+                tempButton.background = "";
+                tempButton.thickness = 2;
+
+                tempButton.onPointerUpObservable.add(function () {
+                    //console.log('right arm');
+                    selectMesh(0);
+                });
+                advancedTexture.addControl(tempButton);
+                // Left arm
+                var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
+                    "https://i.imgur.com/AqEzmko.png");
+                tempButton.left = left + width + 10 + "px";
+                tempButton.width = width + "px";
+                tempButton.height = height + "px";
+                tempButton.top = topOffset + "px";
+                tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+                tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                tempButton.color = "black";
+                tempButton.background = "";
+                tempButton.thickness = 2;
+
+                tempButton.onPointerUpObservable.add(function () {
+                    //console.log('left arm')
+                    selectMesh(1);
+                });
+                advancedTexture.addControl(tempButton);
+                // Right Leg
+                var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/Y6ANASk.png");
+                tempButton.left = left+"px";
+                tempButton.width = width + "px";
+                tempButton.height = height + "px";
+                tempButton.top = topOffset + height + 10 + "px";
+                tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+                tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                tempButton.color = "black";
+                tempButton.background = "";
+                tempButton.thickness = 2;
+                tempButton.onPointerUpObservable.add(function () {
+                    //console.log('right leg')
+                    selectMesh(2);
+                });
+                advancedTexture.addControl(tempButton);
+                // Left Leg
+                var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/RX4nZbE.png");
+                tempButton.left = left + width + 10 + "px";
+                tempButton.width = width + "px";
+                tempButton.height = height + "px";
+                tempButton.top = topOffset + height + 10 + "px";
+                tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+                tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                tempButton.color = "black";
+                tempButton.background = "";
+                tempButton.thickness = 2;
+                tempButton.onPointerUpObservable.add(function () {
+                    //console.log('left leg')
+                    selectMesh(3);
+                });
+                advancedTexture.addControl(tempButton);
+            }
+            var selectMesh = function (index) {
+                if (bodyMeshes[0])
+                    bodyMeshes[0].setEnabled(false);
+                if (bodyMeshes[1])
+                    bodyMeshes[1].setEnabled(false);
+                if (bodyMeshes[2])
+                    bodyMeshes[2].setEnabled(false);
+                if (bodyMeshes[3])
+                    bodyMeshes[3].setEnabled(false);
+                switch (index) { // ik this is a dumb switch. originally i had some logic in it be rmved it
+                    case 0: // right arm
+                        currentTargetBody = bodyMeshes[0]
+                        break;
+                    case 1: // left arm
+                        currentTargetBody = bodyMeshes[1]
+                        break;
+                    case 2: // right leg
+                        currentTargetBody = bodyMeshes[2]
+                        break;
+                    case 3: // left leg
+                        currentTargetBody = bodyMeshes[3]
+                        break;
+                }
+                currentTargetBody.setEnabled(true)
+            }
+            var loadModels = function (scene, armMaterial) {
+                BABYLON.SceneLoader.ImportMesh("",
+                    "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "arm_midpoly.obj",
+                    scene,
+                    function (newMeshes) {
+                        scale = 2;
+                        //
+                        var rightArm = newMeshes[0];
+                        rightArm.name = "Right Arm"
+                        currentTargetBody = rightArm;
+                        rightArm.material = armMaterial;
+                        bodyMeshes[0] = rightArm;
+                        rightArm.position = new BABYLON.Vector3(0, 3, 0);
+                        rightArm.scaling = new BABYLON.Vector3(scale, scale, scale);
+                        var leftArm = rightArm.clone("Left Arm");
+                        bodyMeshes[1] = leftArm;
+                        // set up right arm
+                        rightArm.scaling = new BABYLON.Vector3(startingScale, startingScale, -startingScale);
+                        rightArm.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 200, 0);
+                        // set up left arm
+                        leftArm.scaling = new BABYLON.Vector3(startingScale, startingScale, startingScale);
+                        leftArm.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 20, 0);
+                        selectMesh(0);
+                    });
+
+                BABYLON.SceneLoader.ImportMesh("",
+                    "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "leg_midpoly.obj",
+                    scene,
+                    function (newMeshes) {
+                        scale = 2;
+                        //
+                        var rightLeg = newMeshes[0];
+                        bodyMeshes[2] = rightLeg;
+                        rightLeg.name = "Right Leg"
+                        rightLeg.setEnabled(false);
+                        rightLeg.material = armMaterial;
+
+                        rightLeg.position = new BABYLON.Vector3(0, 3, 0);
+                        rightLeg.scaling = new BABYLON.Vector3(scale, scale, scale);
+                        var leftLeg = rightLeg.clone("Left Leg");
+                        bodyMeshes[3] = leftLeg;
+                        // set up right leg
+                        rightLeg.scaling = new BABYLON.Vector3(startingScale, startingScale, -startingScale);
+                        rightLeg.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 200, 0);
+                        // set up left leg
+                        leftLeg.scaling = new BABYLON.Vector3(startingScale, startingScale, startingScale);
+                        leftLeg.rotation = new BABYLON.Vector3(0, Math.PI / 180 * 20, 0);
+                        // selectMesh(0);
+                    });
+            }
+            // Tattoo
+            var currentTop = 30;
+            var currentCol = 0;             
+            var createTattooButton = function (name, url, index, size) {
+                var buttonSize = 150;
+                if(isVertical)
+                    buttonSize = 90;
+                var ratio = size.width / size.height;
+                var calcHeight = buttonSize / ratio;
+               
+                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
+                //if (currentTop + calcHeight > window.innerHeight) {
+                console.log(currentTop+calcHeight)
+                console.log(advancedTexture.getBaseSize().height)
+                var compareHeight = advancedTexture.getBaseSize().height;
+                if (currentTop + calcHeight+30 > compareHeight) {
+                    currentTop = 30;
+                    currentCol++;
+                }
+
+                button1.top = currentTop + "px";
+                currentTop += calcHeight;
+
+                button1.left = (-buttonSize - 10) * currentCol;
+                button1.width = buttonSize + "px"
+                button1.height = calcHeight + "px";
+                button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+                button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                button1.color = "black";
+                button1.background = "white";
+                button1.cornerRadius = 10;
+
+                button1.onPointerUpObservable.add(function () {
+                    currentDecalIndex = index;
+                    creating = true;
+                    tattooAngle = 0;
+                    tattooScale = originalScale;
+                });
+                advancedTexture.addControl(button1);
+            }
+            var createTattooMaterial = function (url) {
+                var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
+                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
+                decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
+                decalMaterial0.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                decalMaterials.push(decalMaterial0);
+                decalMaterial0.zOffset = -2;
+                decalMaterial0.diffuseTexture = new BABYLON.Texture(url, scene);
+                decalMaterial0.diffuseTexture.hasAlpha = true;
+                var index = decalMaterials.length - 1;
+                decalMaterial0.diffuseTexture.onLoadObservable.add(() => {
+                    var size = decalMaterial0.diffuseTexture.getSize();
+                    createTattooButton(name, url, index, size);
+                })
+            }
+            var createTattoo = function (name, url) {
+                //console.log("Adding tattoo: " + url);
+                if (url == "")
+                    return;
+                if (!url.includes("https://i.imgur.com/"))
+                    return;
+                createTattooMaterial(url);
+
+            }
+            // END GUI
+            // MATERIALS
             var armMaterial = new BABYLON.StandardMaterial("armMaterial", scene);
             col = new BABYLON.Color3(198 / 255, 134 / 255, 66 / 255);
             armMaterial.diffuseColor = col;
             armMaterial.ambientColor = col;
             armMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            // END MATERIALS
             loadModels(scene, armMaterial);
 
             var decalMaterials = [];
-            // GUI
-            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+            // TEXT
             var createText = function () {
                 var text1 = new BABYLON.GUI.TextBlock();
                 if (isMobile)
@@ -284,7 +381,6 @@
                 text1.left = -5;
                 advancedTexture.addControl(text1);
 
-                createBodyButtons(advancedTexture);
 
                 // var text2 = new BABYLON.GUI.TextBlock();
                 // text2.text = "This was designed for PC not mobile";
@@ -301,12 +397,9 @@
                 input.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
                 input.fontSize = 24;
                 input.height = "35px";
-                input.width = "400px";
-                input.left = 5;
-                if (isMobile)
-                    input.left = 30;
-
-                input.top = -5;
+                input.width = window.innerWidth/3+"px";
+                input.left = "20px";
+                input.top = -10;
 
                 advancedTexture.addControl(input);
 
@@ -318,7 +411,7 @@
                 addButton.width = '250px';
                 addButton.height = "35px";
                 addButton.left = -5;
-                addButton.top = -5;
+                addButton.top = -10;
                 addButton.onPointerUpObservable.add(function () {
                     var url = input.text;
                     if (url.includes("https://i.imgur.com/")) {
@@ -338,7 +431,7 @@
 
                 tutorial.top = -50;
 
-                tutorial.left = 5;
+                tutorial.left = "20x";
                 if (isMobile)
                     tutorial.left = 30;
                 advancedTexture.addControl(tutorial);
@@ -346,46 +439,19 @@
             }
             createText();
 
-            var numSkin = 0;
-            var offset = 210;
 
-            var createSkinColorButton = function (color) {
-                col = color.toHexString();
-                var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "");
-                button1.width = "150px"
-                button1.color = col;
-                button1.background = col;
-                height = 70;
-                if (isMobile)
-                    height = 100;
-                button1.height = height + "px";
-
-                button1.left = 5;
-                button1.top = offset + numSkin * (height + 5) + "px";
-                button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-                button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-                button1.cornerRadius = 15;
-                //button1.thickness = 4;
-                numSkin++;
-                button1.onPointerUpObservable.add(function () {
-                    armMaterial.diffuseColor = color;
-                    armMaterial.ambientColor = color;
-                });
-                advancedTexture.addControl(button1);
-            }
             createSkinColorButton(new BABYLON.Color3(141 / 255, 85 / 255, 36 / 255));
             createSkinColorButton(new BABYLON.Color3(198 / 255, 134 / 255, 66 / 255));
             createSkinColorButton(new BABYLON.Color3(241 / 255, 194 / 255, 125 / 255));
-            createBodyButtons(advancedTexture);
-            var width = 140;
-            if (!isMobile)
-                width = 60;
+            createBodyButtons();
+            // transform buttons
+            var width = 80;
             var transOffset = 180;
-
-            var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "+");
+            var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "+"); 
             button1.width = width + "px"
             button1.height = width + "px";
-            button1.top = -transOffset - 3 * width - 5 + "em";
+           // button1.top = -transOffset - 3 * width - 5 + "px";
+           button1.top = -transOffset - 1 * width + 5 + "px";
             button1.color = new BABYLON.Color3(0, 0, 0).toHexString();
             button1.background = new BABYLON.Color3(0.9, 0.9, 0.9).toHexString();
             button1.left = 5;
@@ -406,7 +472,8 @@
             var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "-");
             button1.width = width + "px"
             button1.height = width + "px";
-            button1.top = -transOffset - 2 * width - 5 + "px";
+            //button1.top = -transOffset - 2 * width - 5 + "px";
+            button1.top = -transOffset - 0 * width + 5 + "px";
             button1.color = new BABYLON.Color3(0, 0, 0).toHexString();
             button1.background = new BABYLON.Color3(0.9, 0.9, 0.9).toHexString();
             button1.left = 5;
@@ -432,7 +499,7 @@
             button1.top = -transOffset - 1 * width + 5 + "px";
             button1.color = new BABYLON.Color3(0, 0, 0).toHexString();
             button1.background = new BABYLON.Color3(0.9, 0.9, 0.9).toHexString();
-            button1.left = 5;
+            button1.left = width+10;
             button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
             button1.cornerRadius = 100;
@@ -453,7 +520,7 @@
             button1.top = -transOffset - 0 * width + 5 + "px";
             button1.color = new BABYLON.Color3(0, 0, 0).toHexString();
             button1.background = new BABYLON.Color3(0.9, 0.9, 0.9).toHexString();
-            button1.left = 5;
+            button1.left = width+10;
             button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
             button1.cornerRadius = 100;
@@ -469,66 +536,6 @@
             });
             advancedTexture.addControl(button1);
 
-            var currentTop = 0;
-            var currentCol = 0;
-            var createTattooButton = function (name, url, index, size) {
-                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
-                height = 110;
-                console.log();
-                if (currentTop > window.innerHeight * 0.8) {
-                    currentTop = 0;
-                    currentCol++;
-                }
-                if (isMobile)
-                    max = 14;
-
-                var ratio = size.width / size.height;
-                button1.left = (-height - 10) * currentCol;
-                button1.width = height + "px"
-                var calcHeight = height / ratio;
-                button1.height = calcHeight + "px";
-
-                topPos = 30 + currentTop + "px";
-                currentTop += calcHeight;
-                button1.top = topPos + "px";
-                button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-                button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-                button1.color = "black";
-                button1.background = "white";
-
-
-                button1.onPointerUpObservable.add(function () {
-                    currentDecalIndex = index;
-                    creating = true;
-                    tattooAngle = 0;
-                    tattooScale = originalScale;
-                });
-                advancedTexture.addControl(button1);
-            }
-            var createTattooMaterial = function (url) {
-                var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
-                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
-                decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
-                decalMaterial0.specularColor = new BABYLON.Color3(0.1,0.1,0.1);
-                decalMaterials.push(decalMaterial0);
-                decalMaterial0.zOffset = -2;
-                decalMaterial0.diffuseTexture = new BABYLON.Texture(url, scene);
-                decalMaterial0.diffuseTexture.hasAlpha = true;
-                var index = decalMaterials.length - 1;
-                decalMaterial0.diffuseTexture.onLoadObservable.add(() => {
-                    var size = decalMaterial0.diffuseTexture.getSize();
-                    createTattooButton(name, url, index, size);
-                })
-            }
-            var createTattoo = function (name, url) {
-                //console.log("Adding tattoo: " + url);
-                if (url == "")
-                    return;
-                if (!url.includes("https://i.imgur.com/"))
-                    return;
-                createTattooMaterial(url);
-
-            }
             createTattoo("Misc", "https://i.imgur.com/7sYpTGI.png")
             createTattoo("Misc", "https://i.imgur.com/qembEh7.png")
             createTattoo("Misc", "https://i.imgur.com/7DirhDM.png")
@@ -558,7 +565,7 @@
                 });
                 decal.material = material;
                 // decal.name = name + ':' + tattooScale + ";" + tattooAngle + ']' + currentDecalIndex;
-                decal.data = {type: type, scale: tattooScale, angle: tattooAngle, decalIndex: currentDecalIndex};
+                decal.data = { type: type, scale: tattooScale, angle: tattooAngle, decalIndex: currentDecalIndex };
                 // console.log( decal.data);
                 return decal;
 
@@ -571,7 +578,7 @@
                 moving = true;
                 currentDecal = pickInfo.pickedMesh;
                 var scale = currentDecal.data.scale;
-                var angle =  currentDecal.data.angle;
+                var angle = currentDecal.data.angle;
                 var decalIndex = currentDecal.data.decalIndex;
                 //console.log(rotation);
                 // console.log(decalIndex);
@@ -601,8 +608,8 @@
                             var pickInfo;
                             for (i = 0; i < result.length; i++) {
                                 // console.log(result[i]);
-                                if(bodyMeshes.includes(result[i].pickedMesh))
-                                continue;
+                                if (bodyMeshes.includes(result[i].pickedMesh))
+                                    continue;
                                 if (result[i].pickedMesh.data.type == "placed") {
                                     pickInfo = result[i];
                                     break;
@@ -625,8 +632,7 @@
 
                             if (creating && distanceMoved < 5) {
                                 creating = false;
-                                var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) 
-                                { return mesh === currentTargetBody; });
+                                var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh === currentTargetBody; });
                                 // var result = scene.multiPick(scene.unTranslatedPointer.x, scene.unTranslatedPointer.y);
                                 // console.log(result);
 
@@ -657,7 +663,7 @@
                         var result = scene.multiPick(scene.unTranslatedPointer.x, scene.unTranslatedPointer.y);
                         var pickInfo;
                         for (i = 0; i < result.length; i++) {
-                            if(bodyMeshes.includes(result[i].pickedMesh))
+                            if (bodyMeshes.includes(result[i].pickedMesh))
                                 continue;
                             if (result[i].pickedMesh.data.type == 'placed') {
                                 pickInfo = result[i];
@@ -683,8 +689,7 @@
                             if (rotating) {
                                 tattooAngle += (distanceMovedX + distanceMovedY) * 0.01;
                             }
-                            var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) 
-                            { return mesh === currentTargetBody; });
+                            var armPick = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh === currentTargetBody; });
                             if (armPick.hit) {
                                 if (currentDecal && currentDecal.data.type == 'moving')
                                     currentDecal.dispose();
