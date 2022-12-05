@@ -82,6 +82,7 @@
             var isVertical = false;
             var currentTargetBody;
             var bodyMeshes = [null, null, null, null];
+            var bodyButtons = [null, null, null, null];
             var startingScale = 2;
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
@@ -105,12 +106,15 @@
             // END LIGHTING
             // GUI SECTION 
             var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-            //advancedTexture.idealWidth = 1080;
+            if(isVertical)
+            advancedTexture.idealHeight = 1080;
+            else
+            advancedTexture.idealWidth = 1920;
             // var baseHeight = advancedTexture.getInternalTexture();
             // console.log(baseHeight)
             var numSkin = 0;
             var createSkinColorButton = function (color) {
-                var offset = 210;
+                var offset = 200;
                 col = color.toHexString();
                 var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "");
                 button1.width = "60px"
@@ -132,10 +136,14 @@
                 advancedTexture.addControl(button1);
             }
             var createBodyButtons = function (armMaterial) {
-                var topOffset = 210;
+                var topOffset = 200;
+                if(isVertical)
+                topOffset = 200+200;
                 width = 60;
                 height = 90;
                 left = 70;
+                if(isVertical)
+                left = 5;
                 // Right arm
                 var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
                     "https://i.imgur.com/W1I0Duq.png");
@@ -154,11 +162,12 @@
                     //console.log('right arm');
                     selectMesh(0);
                 });
+                bodyButtons[0] = tempButton;
                 advancedTexture.addControl(tempButton);
                 // Left arm
                 var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "",
                     "https://i.imgur.com/AqEzmko.png");
-                tempButton.left = left + width + 10 + "px";
+                tempButton.left = left + width + "px";
                 tempButton.width = width + "px";
                 tempButton.height = height + "px";
                 tempButton.top = topOffset + "px";
@@ -171,14 +180,16 @@
                 tempButton.onPointerUpObservable.add(function () {
                     //console.log('left arm')
                     selectMesh(1);
+                  
                 });
+                bodyButtons[1] = tempButton;
                 advancedTexture.addControl(tempButton);
                 // Right Leg
                 var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/Y6ANASk.png");
                 tempButton.left = left+"px";
                 tempButton.width = width + "px";
                 tempButton.height = height + "px";
-                tempButton.top = topOffset + height + 10 + "px";
+                tempButton.top = topOffset + height + "px";
                 tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
                 tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
                 tempButton.color = "black";
@@ -188,13 +199,14 @@
                     //console.log('right leg')
                     selectMesh(2);
                 });
+                bodyButtons[2] = tempButton;
                 advancedTexture.addControl(tempButton);
                 // Left Leg
                 var tempButton = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", "https://i.imgur.com/RX4nZbE.png");
-                tempButton.left = left + width + 10 + "px";
+                tempButton.left = left + width + "px";
                 tempButton.width = width + "px";
                 tempButton.height = height + "px";
-                tempButton.top = topOffset + height + 10 + "px";
+                tempButton.top = topOffset + height + "px";
                 tempButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
                 tempButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
                 tempButton.color = "black";
@@ -204,6 +216,7 @@
                     //console.log('left leg')
                     selectMesh(3);
                 });
+                bodyButtons[3] = tempButton;
                 advancedTexture.addControl(tempButton);
             }
             var selectMesh = function (index) {
@@ -215,6 +228,8 @@
                     bodyMeshes[2].setEnabled(false);
                 if (bodyMeshes[3])
                     bodyMeshes[3].setEnabled(false);
+                bodyButtons.forEach((button)=>{    button.background = "";})
+                
                 switch (index) { // ik this is a dumb switch. originally i had some logic in it be rmved it
                     case 0: // right arm
                         currentTargetBody = bodyMeshes[0]
@@ -229,6 +244,7 @@
                         currentTargetBody = bodyMeshes[3]
                         break;
                 }
+                bodyButtons[index].background = "white"
                 currentTargetBody.setEnabled(true)
             }
             var loadModels = function (scene, armMaterial) {
@@ -398,7 +414,7 @@
                 input.fontSize = 24;
                 input.height = "35px";
                 input.width = window.innerWidth/3+"px";
-                input.left = "20px";
+                input.left = "5px";
                 input.top = -10;
 
                 advancedTexture.addControl(input);
@@ -431,9 +447,7 @@
 
                 tutorial.top = -50;
 
-                tutorial.left = "20x";
-                if (isMobile)
-                    tutorial.left = 30;
+                tutorial.left = "5x";
                 advancedTexture.addControl(tutorial);
 
             }
@@ -446,11 +460,11 @@
             createBodyButtons();
             // transform buttons
             var width = 80;
-            var transOffset = 180;
+            var transOffset = 170;
             var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "+"); 
             button1.width = width + "px"
             button1.height = width + "px";
-            button1.top = -transOffset - 3 * width - 5 + "px";
+            button1.top = -transOffset - 3 * width + "px";
             button1.color = new BABYLON.Color3(0, 0, 0).toHexString();
             button1.background = new BABYLON.Color3(0.9, 0.9, 0.9).toHexString();
             button1.left = 5;
@@ -471,7 +485,7 @@
             var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "-");
             button1.width = width + "px"
             button1.height = width + "px";
-            button1.top = -transOffset - 2 * width - 5 + "px";
+            button1.top = -transOffset - 2 * width + "px";
             button1.color = new BABYLON.Color3(0, 0, 0).toHexString();
             button1.background = new BABYLON.Color3(0.9, 0.9, 0.9).toHexString();
             button1.left = 5;
