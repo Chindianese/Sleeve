@@ -122,8 +122,9 @@
             else
                 advancedTexture.idealWidth = 1920;
             advancedTexture.renderAtIdealSize = true
-            var compareHeight = advancedTexture.getBaseSize().height;
-            var compareWidth = advancedTexture.getBaseSize().width;
+            var compareHeight = advancedTexture.getSize().height;
+            var compareWidth = advancedTexture.getSize().width;
+            //console.log(compareWidth)
             // var baseHeight = advancedTexture.getInternalTexture();
             //     console.log(advancedTexture)
             // console.log(advancedTexture.getInternalTexture().height)
@@ -319,14 +320,15 @@
             var currentTop = 30;
             var currentCol = 0;
             var createTattooButton = function (name, url, index, size) {
-                var buttonSize = 150;
-                if (isVertical)
-                    buttonSize = 90;
+                // var buttonSize = 150;
+                // if (isVertical)
+                //     buttonSize = 90;
                 var ratio = size.width / size.height;
 
                 var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
+                //console.log(compareWidth)
                 //if (currentTop + calcHeight > window.innerHeight) {
-                buttonSize = compareWidth * scrollWidth - 15;
+                var buttonSize = compareWidth * scrollWidth - 15;
                 var calcHeight = buttonSize / ratio;
                 //compareHeight = advancedTexture.getSize().height
                 //console.log(currentTop+calcHeight)
