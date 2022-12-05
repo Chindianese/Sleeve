@@ -94,6 +94,10 @@
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
             isVertical = window.innerHeight > window.innerWidth;
+            if(isVertical)
+                scrollWidth = 0.2
+            else
+                scrollWidth = 0.1
             // END VARIABLES
             // CAMERA
             // This creates and positions an ArcRotateCamera
@@ -478,11 +482,11 @@
                 input.top = -10;
                 input.onFocusObservable.add(() => {
                     inputFocus = true;
-                    console.log(inputFocus)
+                    //console.log(inputFocus)
                 })
                 input.onBlurObservable.add(() => {
                     inputFocus = false;
-                    console.log(inputFocus)
+                    //console.log(inputFocus)
                 })
                 advancedTexture.addControl(input);
 
