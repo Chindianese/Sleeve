@@ -68,6 +68,7 @@
             var canvas = engine.getRenderingCanvas();
             // END SCENE
             // VARIABLES
+            var scrollWidth = 0.2;
             var moving = false;
             var scaling = false;
             var rotating = false;
@@ -85,6 +86,10 @@
             var bodyButtons = [null, null, null, null];
             var startingScale = 2;
             var inputFocus = false;
+            var gd;
+            var scrolling = false;
+            var sv;
+            var scrollPos = 0;
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
             isVertical = window.innerHeight > window.innerWidth;
@@ -311,23 +316,25 @@
                 if (isVertical)
                     buttonSize = 90;
                 var ratio = size.width / size.height;
-                var calcHeight = buttonSize / ratio;
 
                 var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
                 //if (currentTop + calcHeight > window.innerHeight) {
                 var compareHeight = advancedTexture.getBaseSize().height;
+                var compareWidth = advancedTexture.getBaseSize().width;
+                buttonSize = compareWidth * scrollWidth-15;
+                var calcHeight = buttonSize / ratio;
                 //compareHeight = advancedTexture.getSize().height
                 //console.log(currentTop+calcHeight)
-                console.log(compareHeight)
-                if (currentTop + calcHeight + 30 > compareHeight) {
-                    currentTop = 30;
-                    currentCol++;
-                }
+                //console.log(compareHeight)
+                // if (currentTop + calcHeight + 30 > compareHeight) {
+                //     currentTop = 30;
+                //     currentCol++;
+                // }
 
-                button1.top = currentTop + "px";
+                // button1.top = currentTop + "px";
                 currentTop += calcHeight;
 
-                button1.left = (-buttonSize - 10) * currentCol;
+               // button1.left = (-buttonSize - 10) * currentCol;
                 button1.width = buttonSize + "px"
                 button1.height = calcHeight + "px";
                 button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
@@ -337,7 +344,8 @@
                 button1.cornerRadius = 10;
 
                 button1.onPointerUpObservable.add(function (data) {
-                    console.log(data.buttonIndex)
+                    scrolling = false;
+                    //console.log(data.buttonIndex)
                     // if (data.buttonIndex == 0) {
                     // }
                     currentDecalIndex = index;
@@ -346,15 +354,34 @@
                     tattooScale = originalScale;
                     // if(data.buttonIndex == 2)
                     // {
-                    //     advancedTexture.removeControl(button1);
+                    //     gd.removeControl(button1);
                     // }
 
                 });
-                advancedTexture.addControl(button1);
+                // advancedTexture.addControl(button1); 
+                button1.onPointerMoveObservable.add((data)=>{
+                    if(!scrolling)
+                    return;
+                    //console.log("move");
+                    // console.log(data)
+                    distanceMoved = data.y - scrollPos;
+                    scrollPos = data.y;
+                    //console.log(distanceMoved)
+                    compareWidth = advancedTexture.getSize().width
+                    sv.verticalBar.value -=distanceMoved/compareWidth*0.3;                    
+                });
+                button1.onPointerDownObservable.add((data)=>{                    
+                    scrollPos = data.y
+                    scrolling = true;
+                });
+                gd.height = currentTop+"px";
+                gd.addRowDefinition(calcHeight,true)
+
+                gd.addControl(button1, index,0)
             }
             var createTattooMaterial = function (url) {
                 var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
-                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1,1);
+                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
                 decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
                 decalMaterial0.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 decalMaterials.push(decalMaterial0);
@@ -366,6 +393,22 @@
                     var size = decalMaterial0.diffuseTexture.getSize();
                     createTattooButton(name, url, index, size);
                 })
+            }
+            var createScrollView = function () {
+                sv = new BABYLON.GUI.ScrollViewer();
+                sv.width = scrollWidth;
+                sv.height = 0.9;
+                sv.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
+                sv.background = "";
+                sv.forVerticalBar = false
+                sv.barSize = 4
+                sv.wheelPrecision = 0.01;
+                advancedTexture.addControl(sv);
+
+                gd = new BABYLON.GUI.Grid();
+                gd.width = 1;
+
+                sv.addControl(gd);
             }
             var createTattoo = function (name, url) {
                 //console.log("Adding tattoo: " + url);
@@ -570,6 +613,7 @@
                 currentDecal = createDecal(currentDecalPickInfo, "placed");
             });
             advancedTexture.addControl(button1);
+            createScrollView()
             // tattoo list
             createTattoo("Misc", "https://i.imgur.com/7sYpTGI.png")
             createTattoo("Misc", "https://i.imgur.com/qembEh7.png")
@@ -591,7 +635,7 @@
             createTattoo("Sparkle", "https://i.imgur.com/sIBZJlT.png")
             createTattoo("Hand", "https://i.imgur.com/xn33EFK.png")
             createTattoo("Wolf", "")
-            // createTattoo("Misc", "")
+            createTattoo("Misc", "")
 
 
 
