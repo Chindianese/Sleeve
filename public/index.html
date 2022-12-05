@@ -94,7 +94,7 @@
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
             isVertical = window.innerHeight > window.innerWidth;
-            if(isVertical)
+            if (isVertical)
                 scrollWidth = 0.2
             else
                 scrollWidth = 0.1
@@ -122,6 +122,8 @@
             else
                 advancedTexture.idealWidth = 1920;
             advancedTexture.renderAtIdealSize = true
+            var compareHeight = advancedTexture.getBaseSize().height;
+            var compareWidth = advancedTexture.getBaseSize().width;
             // var baseHeight = advancedTexture.getInternalTexture();
             //     console.log(advancedTexture)
             // console.log(advancedTexture.getInternalTexture().height)
@@ -324,8 +326,6 @@
 
                 var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
                 //if (currentTop + calcHeight > window.innerHeight) {
-                var compareHeight = advancedTexture.getBaseSize().height;
-                var compareWidth = advancedTexture.getBaseSize().width;
                 buttonSize = compareWidth * scrollWidth - 15;
                 var calcHeight = buttonSize / ratio;
                 //compareHeight = advancedTexture.getSize().height
@@ -372,7 +372,6 @@
                     distanceMoved = data.y - scrollPos;
                     scrollPos = data.y;
                     //console.log(distanceMoved)
-                    compareWidth = advancedTexture.getSize().width
                     sv.verticalBar.value -= distanceMoved / compareWidth * 0.3;
                 });
                 button1.onPointerDownObservable.add((data) => {
@@ -419,8 +418,7 @@
                 //console.log("Adding tattoo: " + url);
                 if (url == "")
                     return;
-                if (!url.includes("https://i.imgur.com/"))
-                {
+                if (!url.includes("https://i.imgur.com/")) {
                     alert("Failed to create tattoo")
                     return;
                 }
@@ -480,7 +478,7 @@
                 input.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
                 input.fontSize = 24;
                 input.height = "35px";
-                input.width = window.innerWidth / 3 + "px";
+                input.width = 0.3;
                 input.left = "5px";
                 input.top = -10;
                 input.onFocusObservable.add(() => {
@@ -504,7 +502,7 @@
                 addButton.top = -10;
                 addButton.onPointerUpObservable.add(function () {
                     var url = input.text;
-                        createTattoo("custom", url);
+                    createTattoo("custom", url);
                     input.text = "";
                 });
 
