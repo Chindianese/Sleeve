@@ -84,6 +84,7 @@
             var bodyMeshes = [null, null, null, null];
             var bodyButtons = [null, null, null, null];
             var startingScale = 2;
+            var inputFocus = false;
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
             isVertical = window.innerHeight > window.innerWidth;
@@ -110,8 +111,13 @@
                 advancedTexture.idealHeight = 1080;
             else
                 advancedTexture.idealWidth = 1920;
+            advancedTexture.renderAtIdealSize = true
             // var baseHeight = advancedTexture.getInternalTexture();
-            // console.log(baseHeight)
+            //     console.log(advancedTexture)
+            // console.log(advancedTexture.getInternalTexture().height)
+            // console.log(advancedTexture.getSize())
+            // console.log(advancedTexture.getBaseSize())
+            // console.log(window.innerHeight)
             var numSkin = 0;
             var createSkinColorButton = function (color) {
                 var offset = 200;
@@ -309,9 +315,10 @@
 
                 var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
                 //if (currentTop + calcHeight > window.innerHeight) {
-                //  console.log(currentTop+calcHeight)
-                //console.log(advancedTexture.getBaseSize().height)
                 var compareHeight = advancedTexture.getBaseSize().height;
+                //compareHeight = advancedTexture.getSize().height
+                //console.log(currentTop+calcHeight)
+                console.log(compareHeight)
                 if (currentTop + calcHeight + 30 > compareHeight) {
                     currentTop = 30;
                     currentCol++;
@@ -329,17 +336,25 @@
                 button1.background = "white";
                 button1.cornerRadius = 10;
 
-                button1.onPointerUpObservable.add(function () {
+                button1.onPointerUpObservable.add(function (data) {
+                    console.log(data.buttonIndex)
+                    // if (data.buttonIndex == 0) {
+                    // }
                     currentDecalIndex = index;
                     creating = true;
                     tattooAngle = 0;
                     tattooScale = originalScale;
+                    // if(data.buttonIndex == 2)
+                    // {
+                    //     advancedTexture.removeControl(button1);
+                    // }
+
                 });
                 advancedTexture.addControl(button1);
             }
             var createTattooMaterial = function (url) {
                 var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
-                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
+                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1,1);
                 decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
                 decalMaterial0.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 decalMaterials.push(decalMaterial0);
@@ -417,7 +432,14 @@
                 input.width = window.innerWidth / 3 + "px";
                 input.left = "5px";
                 input.top = -10;
-
+                input.onFocusObservable.add(() => {
+                    inputFocus = true;
+                    console.log(inputFocus)
+                })
+                input.onBlurObservable.add(() => {
+                    inputFocus = false;
+                    console.log(inputFocus)
+                })
                 advancedTexture.addControl(input);
 
                 var addButton = BABYLON.GUI.Button.CreateSimpleButton("but1", "Add custom tattoo");
@@ -548,7 +570,7 @@
                 currentDecal = createDecal(currentDecalPickInfo, "placed");
             });
             advancedTexture.addControl(button1);
-
+            // tattoo list
             createTattoo("Misc", "https://i.imgur.com/7sYpTGI.png")
             createTattoo("Misc", "https://i.imgur.com/qembEh7.png")
             createTattoo("Misc", "https://i.imgur.com/O8qyhyZ.png")
@@ -556,6 +578,19 @@
             createTattoo("Misc", "https://i.imgur.com/CxRmXjR.png")
             createTattoo("Misc", "https://i.imgur.com/lTIZom6.png")
             createTattoo("Misc", "https://i.imgur.com/fOXWSXL.png")
+            createTattoo("Wolf", "https://i.imgur.com/W6MPtFK.png")
+            createTattoo("UFO", "https://i.imgur.com/ap91QG0.png")
+            createTattoo("JAW", "https://i.imgur.com/05c0fsS.png")
+            createTattoo("Bird", "https://i.imgur.com/mxkHFyx.png")
+            createTattoo("Butterfly", "https://i.imgur.com/xJsARn0.png")
+            createTattoo("Spells", "https://i.imgur.com/wx8Pn5r.png")
+            createTattoo("Candle", "https://i.imgur.com/Vb0ZF7o.png")
+            createTattoo("Frog", "https://i.imgur.com/etpzyJk.png")
+            createTattoo("Shroom", "https://i.imgur.com/uRoL04J.png")
+            createTattoo("Feather", "https://i.imgur.com/KLG4ktg.png")
+            createTattoo("Sparkle", "https://i.imgur.com/sIBZJlT.png")
+            createTattoo("Hand", "https://i.imgur.com/xn33EFK.png")
+            createTattoo("Wolf", "")
             // createTattoo("Misc", "")
 
 
@@ -762,8 +797,8 @@
                 }
             });
 
-                    // Activate the clipboard events listener
-        advancedTexture.registerClipboardEvents();
+            // Activate the clipboard events listener
+            advancedTexture.registerClipboardEvents();
             // Add event listener to onClipboardObservable
             advancedTexture.onClipboardObservable.add((ev) => {
                 // Copy listener
@@ -773,11 +808,13 @@
                 }
                 // Paste listener
                 if (ev.type === BABYLON.ClipboardEventTypes.PASTE) {
+                    if (inputFocus)
+                        return;
                     //console.log("paste")
                     //console.log(ev.event.clipboardData)
                     var textData = ev.event.clipboardData.getData("text/plain");
                     // console.log(textData)
-                    if(textData.includes("https://i.imgur.com/"))
+                    if (textData.includes("https://i.imgur.com/"))
                         createTattoo("", textData);
                 }
             });
