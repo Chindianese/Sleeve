@@ -327,7 +327,7 @@
                 //     buttonSize = 90;
                 var ratio = size.width / size.height;
 
-                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton("but1", "", url);
+                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton(name+"Button", "", url);
                 //console.log(compareWidth)
                 //if (currentTop + calcHeight > window.innerHeight) {
                 var buttonSize = compareWidth * scrollWidth - 15;
@@ -382,12 +382,15 @@
                     scrollPos = data.y
                     scrolling = true;
                 });
+                // console.log(index + "calc height: " + calcHeight) 
+                // console.log(index+"current top: " + currentTop)
+                // console.log("added: " + name) 
                 gd.height = currentTop + "px";
                 gd.addRowDefinition(calcHeight, true)
-
-                gd.addControl(button1, index, 0)
+                gd.addControl(button1,gd.children.length,0)
+                // console.log(gd.children.length)
             }
-            var createTattooMaterial = function (url) {
+            var createTattooMaterial = function (url, name) {
                 var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
                 decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
                 decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
@@ -426,7 +429,7 @@
                     alert("Failed to create tattoo")
                     return;
                 }
-                createTattooMaterial(url);
+                createTattooMaterial(url, name);
 
             }
             // END GUI
@@ -623,13 +626,13 @@
             advancedTexture.addControl(button1);
             createScrollView()
             // tattoo list
-            createTattoo("Misc", "https://i.imgur.com/7sYpTGI.png")
-            createTattoo("Misc", "https://i.imgur.com/qembEh7.png")
-            createTattoo("Misc", "https://i.imgur.com/O8qyhyZ.png")
-            createTattoo("Misc", "https://i.imgur.com/sAWJt05.png")
-            createTattoo("Misc", "https://i.imgur.com/CxRmXjR.png")
-            createTattoo("Misc", "https://i.imgur.com/lTIZom6.png")
-            createTattoo("Misc", "https://i.imgur.com/fOXWSXL.png")
+            createTattoo("Skate", "https://i.imgur.com/7sYpTGI.png")
+            createTattoo("Bottle", "https://i.imgur.com/qembEh7.png")
+            createTattoo("Calcifer", "https://i.imgur.com/O8qyhyZ.png")
+            createTattoo("FLowerSkull", "https://i.imgur.com/sAWJt05.png")
+            createTattoo("Eye", "https://i.imgur.com/CxRmXjR.png")
+            createTattoo("SplitSkull", "https://i.imgur.com/lTIZom6.png")
+            createTattoo("Rect", "https://i.imgur.com/fOXWSXL.png")
             createTattoo("Wolf", "https://i.imgur.com/W6MPtFK.png")
             createTattoo("UFO", "https://i.imgur.com/ap91QG0.png")
             createTattoo("JAW", "https://i.imgur.com/05c0fsS.png")
