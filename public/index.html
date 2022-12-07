@@ -41,9 +41,9 @@
 </head>
 
 <body>
-    <form action="/action_page.php" style="position: absolute; bottom: 0px; width: 250px; height: 50px; left: 5px;">
+    <form action="/action_page.php" style="position: absolute; bottom: 0px; width: 250px; height: 40px; left: 15px;">
         <!-- <label for="CustomTattoo">Add custom tattoo</label> -->
-        <input name="CustomTattoo" id="loadFile" type="file">
+        <input name="CustomTattoo" id="loadFile" type="file"accept="image/png, image/jpeg">
     </form>
 
 
@@ -108,7 +108,7 @@
             if (isVertical)
                 scrollWidth = 0.2
             else
-                scrollWidth = 0.1
+                scrollWidth = 0.05
             // END VARIABLES        
             // CAMERA
             // This creates and positions an ArcRotateCamera
@@ -410,12 +410,12 @@
                 console.log(button1.image)
                 console.log(texture)
                 var buttonSize = compareWidth * scrollWidth - 15;
-                var calcHeight = buttonSize / ratio;
+                var calcHeight = buttonSize;
                 currentTop += calcHeight;
 
                 // button1.left = (-buttonSize - 10) * currentCol;
                 button1.width = buttonSize + "px"
-                button1.height = calcHeight + "px";
+                button1.height = buttonSize + "px";
                 button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
                 button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
                 button1.color = "black";
@@ -485,7 +485,7 @@
                 sv.background = "";
                 sv.forVerticalBar = false
                 sv.barSize = 4
-                sv.wheelPrecision = 0.01;
+                sv.wheelPrecision = 0.02;
                 advancedTexture.addControl(sv);
 
                 gd = new BABYLON.GUI.Grid();
@@ -594,7 +594,7 @@
                 }
                 var tutorial = new BABYLON.GUI.TextBlock();
                 //  tutorial.text = "How to add custom tattoo:\nFind image\nRemove BG with on https://www.remove.bg/\nUpload to imgur\nRight click > copy image address\nURL should be https://i.imgur.com/abcdefg.png";
-                tutorial.text = "How to add custom tattoo:\nFind image\nRemove BG with on https://www.remove.bg/\nDownload.\nChoose file";
+                tutorial.text = "How to add custom tattoo:\nFind image\nRemove BG with on https://www.remove.bg/\nChoose file...";
                 tutorial.color = "white";
                 tutorial.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
                 tutorial.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
@@ -602,7 +602,7 @@
 
                 tutorial.top = -50;
 
-                tutorial.left = "5x";
+                tutorial.left = "20x";
                 advancedTexture.addControl(tutorial);
 
             }
@@ -704,7 +704,31 @@
             advancedTexture.addControl(button1);
             createScrollView()
             // tattoo list
+            createTattoo("Ghost_01")
+            createTattoo("Ghost_02")
+            createTattoo("Ghost_03")
             createTattoo("Skate")
+            createTattoo("BirdSkull")
+            createTattoo("Bottle")
+            createTattoo("Butterfly")
+            createTattoo("Califer")
+            createTattoo("Candle")
+            createTattoo("Eye")
+            createTattoo("Feather")
+            createTattoo("Frog")
+            createTattoo("Hand")
+            createTattoo("Jaguar")
+            createTattoo("JAW")
+            createTattoo("Mushroom")
+            createTattoo("Rect")
+            createTattoo("SkullRose")
+            createTattoo("Sparkle")
+            createTattoo("Spells")
+            createTattoo("SplitSkull")
+            createTattoo("UFO")
+            createTattoo("WX1")
+            createTattoo("wx2")
+            //createTattoo("")
             // createTattoo("Bottle", "https://i.imgur.com/qembEh7.png")
             // createTattoo("Calcifer", "https://i.imgur.com/O8qyhyZ.png")
             // createTattoo("FLowerSkull", "https://i.imgur.com/sAWJt05.png")
