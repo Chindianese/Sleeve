@@ -404,11 +404,11 @@
             }
             var createTattooButtonFromFile = function (name, texture, index, size) {
                 var ratio = size.width / size.height;
-                console.log("create image button")
+                //console.log("create image button")
                 var button1 = BABYLON.GUI.Button.CreateImageOnlyButton(name + "Button", "Custom.png");
                 // button1.image = texture;
-                console.log(button1.image)
-                console.log(texture)
+                // console.log(button1.image)
+                // console.log(texture)
                 var buttonSize = compareWidth * scrollWidth - 15;
                 var calcHeight = buttonSize;
                 currentTop += calcHeight;
