@@ -43,7 +43,7 @@
 <body>
     <form action="/action_page.php" style="position: absolute; bottom: 0px; width: 250px; height: 40px; left: 15px;">
         <!-- <label for="CustomTattoo">Add custom tattoo</label> -->
-        <input name="CustomTattoo" id="loadFile" type="file"accept="image/png, image/jpeg">
+        <input name="CustomTattoo" id="loadFile" type="file" accept="image/png, image/jpeg">
     </form>
 
 
@@ -148,7 +148,7 @@
             // console.log(window.innerHeight)
             var numSkin = 0;
             var createSkinColorButton = function (color) {
-                var offset = 200;
+                var offset = 205;
                 col = color.toHexString();
                 var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "");
                 button1.width = "60px"
@@ -170,7 +170,7 @@
                 advancedTexture.addControl(button1);
             }
             var createBodyButtons = function (armMaterial) {
-                var topOffset = 200;
+                var topOffset = 205;
                 if (isVertical)
                     topOffset = 200 + 200;
                 width = 60;
@@ -283,7 +283,7 @@
             }
             var loadModels = function (scene, armMaterial) {
                 BABYLON.SceneLoader.ImportMesh("",
-                    "models/", "arm_midpoly.obj",
+                    "", "arm_midpoly.obj",
                     scene,
                     function (newMeshes) {
                         //
@@ -305,7 +305,7 @@
                     });
 
                 BABYLON.SceneLoader.ImportMesh("",
-                "models/", "leg_midpoly.obj",
+                    "", "leg_midpoly.obj",
                     scene,
                     function (newMeshes) {
                         scale = 2;
@@ -336,8 +336,8 @@
                 // if (isVertical)
                 //     buttonSize = 90;
                 var ratio = size.width / size.height;
-
-                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton(name + "Button", "", "Images/" + name + ".png");
+                //console.log(name)
+                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton(name + "Button", "", name + ".png");
                 // console.log(button1)
                 //console.log(compareWidth)
                 //if (currentTop + calcHeight > window.innerHeight) {
@@ -405,7 +405,7 @@
             var createTattooButtonFromFile = function (name, texture, index, size) {
                 var ratio = size.width / size.height;
                 console.log("create image button")
-                var button1 = BABYLON.GUI.Button.CreateImageOnlyButton(name + "Button", "Images/Custom.png");
+                var button1 = BABYLON.GUI.Button.CreateImageOnlyButton(name + "Button", "Custom.png");
                 // button1.image = texture;
                 console.log(button1.image)
                 console.log(texture)
@@ -454,7 +454,7 @@
                 decalMaterial0.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 decalMaterials.push(decalMaterial0);
                 decalMaterial0.zOffset = -2;
-                decalMaterial0.diffuseTexture = new BABYLON.Texture("images/"+name+".png", scene);
+                decalMaterial0.diffuseTexture = new BABYLON.Texture(name + ".png", scene);
                 decalMaterial0.diffuseTexture.hasAlpha = true;
                 var index = decalMaterials.length - 1;
                 decalMaterial0.diffuseTexture.onLoadObservable.add(() => {
@@ -500,7 +500,7 @@
                 // if (!url.includes("https://i.imgur.com/")) {
                 //     alert("Failed to create tattoo")
                 //     return;
-                // }
+                // }            
                 createTattooMaterial(name);
 
             }
