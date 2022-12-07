@@ -41,6 +41,13 @@
 </head>
 
 <body>
+    <form action="/action_page.php" style="position: absolute; bottom: 0px; width: 250px; height: 50px; left: 5px;">
+        <!-- <label for="CustomTattoo">Add custom tattoo</label> -->
+        <input name="CustomTattoo" id="loadFile" type="file">
+    </form>
+
+
+
     <canvas id="renderCanvas"></canvas>
     <script>
 
@@ -58,6 +65,9 @@
         var scene = null;
         var sceneToRender = null;
         var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false }); };
+
+        var fileInput = document.getElementById("loadFile");
+
         var createScene = function () {
             // SCENE
             var scene = new BABYLON.Scene(engine);
@@ -91,7 +101,7 @@
             var scrolling = false;
             var sv;
             var scrollPos = 0;
-            var startHeight= 1;
+            var startHeight = 1;
             if (navigator && navigator.userAgentData)
                 isMobile = navigator.userAgentData.mobile; //resolves true/false
             isVertical = window.innerHeight > window.innerWidth;
@@ -99,7 +109,7 @@
                 scrollWidth = 0.2
             else
                 scrollWidth = 0.1
-            // END VARIABLES
+            // END VARIABLES        
             // CAMERA
             // This creates and positions an ArcRotateCamera
             var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 3, Math.PI / 3, 30,
@@ -273,7 +283,7 @@
             }
             var loadModels = function (scene, armMaterial) {
                 BABYLON.SceneLoader.ImportMesh("",
-                    "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "arm_midpoly.obj",
+                    "models/", "arm_midpoly.obj",
                     scene,
                     function (newMeshes) {
                         //
@@ -295,7 +305,7 @@
                     });
 
                 BABYLON.SceneLoader.ImportMesh("",
-                    "https://raw.githubusercontent.com/Chindianese/SleeveAssets/main/", "leg_midpoly.obj",
+                "models/", "leg_midpoly.obj",
                     scene,
                     function (newMeshes) {
                         scale = 2;
@@ -321,13 +331,14 @@
             // Tattoo
             var currentTop = 30;
             var currentCol = 0;
-            var createTattooButton = function (name, url, index, size) {
+            var createTattooButton = function (name, index, size) {
                 // var buttonSize = 150;
                 // if (isVertical)
                 //     buttonSize = 90;
                 var ratio = size.width / size.height;
 
-                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton(name+"Button", "", url);
+                var button1 = BABYLON.GUI.Button.CreateImageWithCenterTextButton(name + "Button", "", "Images/" + name + ".png");
+                // console.log(button1)
                 //console.log(compareWidth)
                 //if (currentTop + calcHeight > window.innerHeight) {
                 var buttonSize = compareWidth * scrollWidth - 15;
@@ -367,6 +378,7 @@
                     // }
 
                 });
+
                 // advancedTexture.addControl(button1); 
                 button1.onPointerMoveObservable.add((data) => {
                     if (!scrolling)
@@ -387,23 +399,83 @@
                 // console.log("added: " + name) 
                 gd.height = currentTop + "px";
                 gd.addRowDefinition(calcHeight, true)
-                gd.addControl(button1,gd.children.length,0)
+                gd.addControl(button1, gd.children.length, 0)
                 // console.log(gd.children.length)
             }
-            var createTattooMaterial = function (url, name) {
+            var createTattooButtonFromFile = function (name, texture, index, size) {
+                var ratio = size.width / size.height;
+                console.log("create image button")
+                var button1 = BABYLON.GUI.Button.CreateImageOnlyButton(name + "Button", "Images/Custom.png");
+                // button1.image = texture;
+                console.log(button1.image)
+                console.log(texture)
+                var buttonSize = compareWidth * scrollWidth - 15;
+                var calcHeight = buttonSize / ratio;
+                currentTop += calcHeight;
+
+                // button1.left = (-buttonSize - 10) * currentCol;
+                button1.width = buttonSize + "px"
+                button1.height = calcHeight + "px";
+                button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+                button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+                button1.color = "black";
+                button1.background = "white";
+                button1.cornerRadius = 10;
+
+                button1.onPointerUpObservable.add(function (data) {
+                    scrolling = false;
+                    currentDecalIndex = index;
+                    creating = true;
+                    tattooAngle = 0;
+                    tattooScale = originalScale;
+                });
+
+                // advancedTexture.addControl(button1); 
+                button1.onPointerMoveObservable.add((data) => {
+                    if (!scrolling)
+                        return;
+                    distanceMoved = data.y - scrollPos;
+                    scrollPos = data.y;
+                    sv.verticalBar.value -= distanceMoved / compareWidth * 0.3;
+                });
+                button1.onPointerDownObservable.add((data) => {
+                    scrollPos = data.y
+                    scrolling = true;
+                });
+                gd.height = currentTop + "px";
+                gd.addRowDefinition(calcHeight, true)
+                gd.addControl(button1, gd.children.length, 0)
+                // console.log(gd.children.length)
+            }
+            var createTattooMaterial = function (name, url) {
                 var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
                 decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
                 decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
                 decalMaterial0.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 decalMaterials.push(decalMaterial0);
                 decalMaterial0.zOffset = -2;
-                decalMaterial0.diffuseTexture = new BABYLON.Texture(url, scene);
+                decalMaterial0.diffuseTexture = new BABYLON.Texture("images/"+name+".png", scene);
                 decalMaterial0.diffuseTexture.hasAlpha = true;
                 var index = decalMaterials.length - 1;
                 decalMaterial0.diffuseTexture.onLoadObservable.add(() => {
                     var size = decalMaterial0.diffuseTexture.getSize();
-                    createTattooButton(name, url, index, size);
+                    createTattooButton(name, index, size);
                 })
+            }
+            var createTattooMaterialFromFile = function (name, material) {
+                var decalMaterial0 = new BABYLON.StandardMaterial("decalMat", scene);
+                decalMaterial0.diffuseColor = new BABYLON.Color3(1, 1, 1);
+                decalMaterial0.ambientColor = new BABYLON.Color3(1, 1, 1);
+                decalMaterial0.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                decalMaterials.push(decalMaterial0);
+                decalMaterial0.zOffset = -2;
+                decalMaterial0.diffuseTexture = material;
+                decalMaterial0.diffuseTexture.hasAlpha = true;
+                var index = decalMaterials.length - 1;
+                var size = decalMaterial0.diffuseTexture.getSize();
+                createTattooButtonFromFile(name, material, index, size);
+                // decalMaterial0.diffuseTexture.onLoadObservable.add(() => {
+                // })
             }
             var createScrollView = function () {
                 sv = new BABYLON.GUI.ScrollViewer();
@@ -423,14 +495,17 @@
             }
             var createTattoo = function (name, url) {
                 //console.log("Adding tattoo: " + url);
-                if (url == "")
-                    return;
-                if (!url.includes("https://i.imgur.com/")) {
-                    alert("Failed to create tattoo")
-                    return;
-                }
-                createTattooMaterial(url, name);
+                // if (url == "")
+                //     return;
+                // if (!url.includes("https://i.imgur.com/")) {
+                //     alert("Failed to create tattoo")
+                //     return;
+                // }
+                createTattooMaterial(name);
 
+            }
+            var createTattooFromFile = function (name, material) {
+                createTattooMaterialFromFile(name, material);
             }
             // END GUI
             // MATERIALS
@@ -479,44 +554,47 @@
                 // text2.top = 5;
                 // advancedTexture.addControl(text2);
 
-                var input = new BABYLON.GUI.InputText("", "");
-                input.color = "white";
-                input.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
-                input.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
-                input.fontSize = 24;
-                input.height = "35px";
-                input.width = 0.3;
-                input.left = "5px";
-                input.top = -10;
-                input.onFocusObservable.add(() => {
-                    inputFocus = true;
-                    //console.log(inputFocus)
-                })
-                input.onBlurObservable.add(() => {
-                    inputFocus = false;
-                    //console.log(inputFocus)
-                })
-                advancedTexture.addControl(input);
+                var createInput = function () {
+                    var input = new BABYLON.GUI.InputText("", "");
+                    input.color = "white";
+                    input.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+                    input.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
+                    input.fontSize = 24;
+                    input.height = "35px";
+                    input.width = 0.3;
+                    input.left = "5px";
+                    input.top = -10;
+                    input.onFocusObservable.add(() => {
+                        inputFocus = true;
+                        //console.log(inputFocus)
+                    })
+                    input.onBlurObservable.add(() => {
+                        inputFocus = false;
+                        //console.log(inputFocus)
+                    })
+                    advancedTexture.addControl(input);
+                }
 
-                var addButton = BABYLON.GUI.Button.CreateSimpleButton("but1", "Add custom tattoo");
-                addButton.color = "white";
-                addButton.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_RIGHT;
-                addButton.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
-                addButton.fontSize = 24;
-                addButton.width = '250px';
-                addButton.height = "35px";
-                addButton.left = -5;
-                addButton.top = -10;
-                addButton.onPointerUpObservable.add(function () {
-                    var url = input.text;
-                    createTattoo("custom", url);
-                    input.text = "";
-                });
-
-
-                advancedTexture.addControl(addButton);
+                var createAddCustomTattooButton = function () {
+                    var addButton = BABYLON.GUI.Button.CreateSimpleButton("but1", "Add custom tattoo");
+                    addButton.color = "white";
+                    addButton.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_RIGHT;
+                    addButton.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
+                    addButton.fontSize = 24;
+                    addButton.width = '250px';
+                    addButton.height = "35px";
+                    addButton.left = -5;
+                    addButton.top = -10;
+                    addButton.onPointerUpObservable.add(function () {
+                        var url = input.text;
+                        createTattoo("custom", url);
+                        input.text = "";
+                    });
+                    advancedTexture.addControl(addButton);
+                }
                 var tutorial = new BABYLON.GUI.TextBlock();
-                tutorial.text = "How to add custom tattoo:\nFind image\nRemove BG with on https://www.remove.bg/\nUpload to imgur\nRight click > copy image address\nURL should be https://i.imgur.com/abcdefg.png";
+                //  tutorial.text = "How to add custom tattoo:\nFind image\nRemove BG with on https://www.remove.bg/\nUpload to imgur\nRight click > copy image address\nURL should be https://i.imgur.com/abcdefg.png";
+                tutorial.text = "How to add custom tattoo:\nFind image\nRemove BG with on https://www.remove.bg/\nDownload.\nChoose file";
                 tutorial.color = "white";
                 tutorial.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
                 tutorial.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
@@ -626,27 +704,27 @@
             advancedTexture.addControl(button1);
             createScrollView()
             // tattoo list
-            createTattoo("Skate", "https://i.imgur.com/7sYpTGI.png")
-            createTattoo("Bottle", "https://i.imgur.com/qembEh7.png")
-            createTattoo("Calcifer", "https://i.imgur.com/O8qyhyZ.png")
-            createTattoo("FLowerSkull", "https://i.imgur.com/sAWJt05.png")
-            createTattoo("Eye", "https://i.imgur.com/CxRmXjR.png")
-            createTattoo("SplitSkull", "https://i.imgur.com/lTIZom6.png")
-            createTattoo("Rect", "https://i.imgur.com/fOXWSXL.png")
-            createTattoo("Wolf", "https://i.imgur.com/W6MPtFK.png")
-            createTattoo("UFO", "https://i.imgur.com/ap91QG0.png")
-            createTattoo("JAW", "https://i.imgur.com/05c0fsS.png")
-            createTattoo("Bird", "https://i.imgur.com/mxkHFyx.png")
-            createTattoo("Butterfly", "https://i.imgur.com/xJsARn0.png")
-            createTattoo("Spells", "https://i.imgur.com/wx8Pn5r.png")
-            createTattoo("Candle", "https://i.imgur.com/Vb0ZF7o.png")
-            createTattoo("Frog", "https://i.imgur.com/etpzyJk.png")
-            createTattoo("Shroom", "https://i.imgur.com/uRoL04J.png")
-            createTattoo("Feather", "https://i.imgur.com/KLG4ktg.png")
-            createTattoo("Sparkle", "https://i.imgur.com/sIBZJlT.png")
-            createTattoo("Hand", "https://i.imgur.com/xn33EFK.png")
-            createTattoo("Hand", "https://i.imgur.com/606VJX0.png")
-            createTattoo("Hand", "https://i.imgur.com/7ez2JzE.png")
+            createTattoo("Skate")
+            // createTattoo("Bottle", "https://i.imgur.com/qembEh7.png")
+            // createTattoo("Calcifer", "https://i.imgur.com/O8qyhyZ.png")
+            // createTattoo("FLowerSkull", "https://i.imgur.com/sAWJt05.png")
+            // createTattoo("Eye", "https://i.imgur.com/CxRmXjR.png")
+            // createTattoo("SplitSkull", "https://i.imgur.com/lTIZom6.png")
+            // createTattoo("Rect", "https://i.imgur.com/fOXWSXL.png")
+            // createTattoo("Wolf", "https://i.imgur.com/W6MPtFK.png")
+            // createTattoo("UFO", "https://i.imgur.com/ap91QG0.png")
+            // createTattoo("JAW", "https://i.imgur.com/05c0fsS.png")
+            // createTattoo("Bird", "https://i.imgur.com/mxkHFyx.png")
+            // createTattoo("Butterfly", "https://i.imgur.com/xJsARn0.png")
+            // createTattoo("Spells", "https://i.imgur.com/wx8Pn5r.png")
+            // createTattoo("Candle", "https://i.imgur.com/Vb0ZF7o.png")
+            // createTattoo("Frog", "https://i.imgur.com/etpzyJk.png")
+            // createTattoo("Shroom", "https://i.imgur.com/uRoL04J.png")
+            // createTattoo("Feather", "https://i.imgur.com/KLG4ktg.png")
+            // createTattoo("Sparkle", "https://i.imgur.com/sIBZJlT.png")
+            // createTattoo("Hand", "https://i.imgur.com/xn33EFK.png")
+            // createTattoo("Hand", "https://i.imgur.com/606VJX0.png")
+            // createTattoo("Hand", "https://i.imgur.com/7ez2JzE.png")
             // createTattoo("Misc", "")
 
 
@@ -722,7 +800,7 @@
                     case BABYLON.PointerEventTypes.POINTERUP:
                         if (selected) {
                             camera.attachControl(canvas, true);
-                            console.log("attached")
+                            // console.log("attached")
                             selected = false;
                             if (moved) {
                                 currentDecal.dispose();
@@ -869,14 +947,46 @@
                     if (inputFocus)
                         return;
                     //console.log("paste")
-                    //console.log(ev.event.clipboardData)
+                    //zconsole.log(ev.event.clipboardData)
                     var textData = ev.event.clipboardData.getData("text/plain");
                     // console.log(textData)
                     if (textData.includes("https://i.imgur.com/"))
                         createTattoo("", textData);
                 }
             });
+            // Load
 
+            let assetsManager = new BABYLON.AssetsManager(scene);
+            //called when a single task has been sucessfull
+            assetsManager.onTaskSuccessObservable.add(function (task) {
+                // var mesh = task.loadedMeshes[0]; //will hold the mesh that has been loaded recently
+                // console.log('task successful', task);
+            });
+
+            assetsManager.onTaskErrorObservable.add(function (task) {
+                console.log('task failed', task.errorObject.message, task.errorObject.exception);
+                alert('unable to load image')
+            });
+
+            var loadButton = document.getElementById('loadFile');
+            loadButton.onchange = function (evt) {
+
+                var files = evt.target.files;
+                var filename = files[0].name;
+                var blob = new Blob([files[0]]);
+                console.log(files)
+                BABYLON.FilesInput.FilesToLoad[filename.toLowerCase()] = blob;
+
+                //assetsManager.addMeshTask(name, "", "file:", filename);
+                var imageTask = assetsManager.addTextureTask(name, "file:" + filename);
+                imageTask.onSuccess = function (task) {
+                    // bodyMeshes[0].material.diffuseTexture = task.texture;
+                    console.log(task)
+                    createTattooFromFile(name, task.texture)
+                }
+                assetsManager.load();
+            };
+            //
 
             return scene;
         }
